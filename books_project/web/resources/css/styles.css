@@ -1,0 +1,121 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 2, 2016, 11:53:24 PM
+    Author     : user
+*/
+
+body{
+  width: 810px;
+  margin: 0 auto; 
+  align-content: center;
+  text-align: center;
+  
+}
+
+.left_menu{
+    width: 150px;
+    float: left;
+}
+
+.content{
+    width: 650px;
+    float: left;
+}
+
+.header{
+    color: blue;
+    clear: none;
+}
+
+.top{
+    height: 100px;
+}
+
+.img_logo{
+    height: 100px;
+    width: 100px;
+    float: left;
+}
+
+.txt_title{
+    color: royalblue;
+    font-size: 60px;
+    margin-top: 20px;
+    width: 500px;
+    float: left;
+}
+
+.logout{
+    margin-top: 40px;
+    width: 100px;
+    float: right;
+}
+
+.txt_username{
+    color: green;
+    width: 200px;
+}
+
+.btn_logout{
+    color: red;
+    width: 300px;
+    float: right;
+    margin-right: 3px;
+}
+
+.search{
+    height: 10px;
+    clear: none;
+}
+
+.fld_search{
+    width: 500px;
+    float: left;
+    margin-top: 1px;
+}
+
+.btn_search{
+    width:  147px;
+    float: left;  
+}
+
+.find_criteria{
+    width: 150px;
+    float: left;
+    margin-top: 1px;
+}
+
+.col_image_big{
+    width: 100px;
+    height: 100px;
+}
+
+.col_image{
+    width: 30px;
+    height: 30px;
+    font: left;
+}
+
+
+.col_info{
+    width: 200px;
+    float: left;
+}
+
+.col_description{
+    width: 500px;
+    float: left;
+}
+
+.no_pages{
+    height: 30px;
+    background: red;
+}
+
+.col{
+    width: 650px;
+}

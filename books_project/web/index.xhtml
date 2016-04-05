@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/templates/books_template.xhtml">
+            <ui:define name="content_books" >
+                <h:dataTable value="#{booksController.getBooks()}" var="book"  border="1">
+                    
+                    <h:column>
+                        <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
+                        <h:commandButton action="#{booksController.deleteBook()}" image="/resources/images/delete.png" styleClass="col_image">
+                            <f:param name="book_id" value="#{book.getId()}" />
+                        </h:commandButton>
+                        <h:commandButton image="/resources/images/update.png" styleClass="col_image"/>
+                    </h:column>
+                    
+                    <h:column>
+                        <p><h3>#{book.getTitle()}</h3></p>
+                        <p><h4>#{book.getYear()} год</h4></p>
+                        <p><h4>#{book.getAuthor()}</h4></p>
+                        <p><h4>#{book.getPublisher()}</h4></p>
+                        <p><h4>#{book.getIsbn()} isbn</h4></p>
+                    </h:column>
+                    
+                    <h:column>
+                        <p>#{book.getDescription()}</p>
+                    </h:column> 
+                    
+                </h:dataTable>
+            </ui:define>
+            
+            <ui:define name="no_pages">
+                <h:form>
+                    <ui:repeat value="#{booksController.getNoPages()}" var="noPage">
+                        <h:commandLink  value="#{noPage}" action="#{booksController.openPageNo()}">
+                            <f:param name="no_page" value="#{noPage}"/>
+                        </h:commandLink>
+                    </ui:repeat>
+                </h:form>
+            </ui:define>
+            
+            <ui:define name="username">
+                котопек
+            </ui:define>
+            
+            <ui:define name="left_menu">
+                <ui:repeat value="#{genresController.getGenres()}" var="genre">
+                    <h:form>
+                        <h:commandLink  value="#{genre.getName()}" action="#{booksController.openBooksByGenre()}">
+                            <f:param name="genre_id" value="#{genre.getId()}"/>
+                        </h:commandLink>
+                     </h:form>
+                </ui:repeat>
+            </ui:define>
+            
+        </ui:composition>
+        
+    </h:body>
+</html>
+
