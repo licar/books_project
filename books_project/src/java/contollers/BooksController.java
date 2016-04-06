@@ -443,8 +443,12 @@ public class BooksController implements Serializable {
         books = tempBooks;
     }
     
-    public void updateBook(Book book){
-        int i = 1 + 1;
+    public void updateBook(){
+        conditionShow = conditionShow.GENRE;
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String title = String.valueOf(params.get("title"));
+        int i = 0;
+        
     }
 
 }

@@ -30,7 +30,7 @@
                         <h:form rendered="#{!book.isDisplayMode()}" >
                             <table>
                                 <tr>
-                                    <td><h:inputText value="#{book.getTitle()}"/></td>
+                                    <td><h:inputText binding="#{title}" value="#{book.getTitle()}"/></td>
                                 </tr>
                                 <tr>
                                     <td><h:inputText value="#{book.getYear()}"/></td>
@@ -79,8 +79,9 @@
                     
                     <h:column>
                         <h:form rendered="#{!book.isDisplayMode()}" >
-                            <h:commandLink action="#{booksController.updateBook(book)}">
+                            <h:commandLink action="#{booksController.updateBook()}">
                                 <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
+                                <f:param name="title" value="#{title}"/> 
                             </h:commandLink>
                             <h:commandButton value="cancel" action="#{book.setModeDisplay()}" styleClass="btns_edit" />
                         </h:form>
