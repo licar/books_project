@@ -12,6 +12,8 @@ import java.awt.Image;
  * @author user
  */
 public class Book {
+    public enum ShowMode {DISPLAY, EDIT};
+    
     private Integer id;
     private String title;
     private String description;
@@ -21,7 +23,8 @@ public class Book {
     private String isbn;
     private Image image;
     private byte[] file;
-    private boolean changed = false; 
+    private boolean changed = false;
+    private ShowMode showMode = ShowMode.DISPLAY;   
 
     public Book() {
     }
@@ -117,4 +120,21 @@ public class Book {
     public void change(){
         this.changed = true;
     } 
+    
+    public void setModeDisplay(){
+        this.showMode = ShowMode.DISPLAY;
+    }
+    
+    public void setModeEdit(){
+        this.showMode = ShowMode.EDIT;
+    }
+    
+    public ShowMode getShowMode(){
+        return this.showMode;
+    }
+    
+    public boolean isDisplayMode(){
+        return showMode == ShowMode.DISPLAY;
+    }
+    
 }

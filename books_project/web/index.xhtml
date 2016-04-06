@@ -15,7 +15,9 @@
                     <h:column>
                         <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
                         <h:form>
-                            <h:commandButton image="/resources/images/update.png" styleClass="col_image"/>
+                            <h:commandLink action="#{book.setModeEdit()}"> 
+                                <h:graphicImage library="images" name = "update.png" styleClass="col_image"/>
+                            </h:commandLink>
                             <h:commandLink action="#{booksController.deleteBook()}"> 
                                 <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
                                 <f:param name="book_id" value="#{book.getId()}" />
@@ -25,16 +27,65 @@
                     </h:column>
                     
                     <h:column>
-                        <p><h3>#{book.getTitle()}</h3></p>
-                        <p><h4>#{book.getYear()} год</h4></p>
-                        <p><h4>#{book.getAuthor()}</h4></p>
-                        <p><h4>#{book.getPublisher()}</h4></p>
-                        <p><h4>#{book.getIsbn()} isbn</h4></p>
+                        <h:form rendered="#{!book.isDisplayMode()}" >
+                            <table>
+                                <tr>
+                                    <td><h:inputText value="#{book.getTitle()}"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:inputText value="#{book.getYear()}"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:inputText value="#{book.getAuthor()}"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:inputText value="#{book.getPublisher()}"/></td>
+                                </tr>
+                                <tr>
+                                    <td><h:inputText value="#{book.getIsbn()}"/></td>
+                                </tr>
+                            </table>
+                        </h:form>
+                        <h:form rendered="#{book.isDisplayMode()}" >
+                            <table>
+                                <tr>
+                                    <td><h4>#{book.getTitle()}</h4></td>
+                                </tr>
+                                <tr>
+                                    <td>#{book.getYear()}</td>
+                                </tr>
+                                <tr>
+                                    <td>#{book.getAuthor()}</td>
+                                </tr>
+                                <tr>
+                                    <td>#{book.getPublisher()}</td>
+                                </tr>
+                                <tr>
+                                    <td>#{book.getIsbn()}</td>
+                                </tr>
+                            </table>
+                        </h:form>
                     </h:column>
                     
                     <h:column>
-                        <p>#{book.getDescription()}</p>
+                        <h:form rendered="#{!book.isDisplayMode()}" >
+                            <h:inputTextarea value="#{book.getDescription()}" cols="30"  rows="7" />
+                        </h:form>
+                        <h:form rendered="#{book.isDisplayMode()}" >
+                            <h:outputText  value="#{book.getDescription()}"/>
+                        </h:form>
                     </h:column> 
+                    
+                    
+                    <h:column>
+                        <h:form rendered="#{!book.isDisplayMode()}" >
+                            <h:commandLink action="#{booksContoller.updateBook()}">
+                                <f:param name="book" value ="#{book}"/>
+                                <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
+                            </h:commandLink>
+                            <h:commandButton value="cancel" action="#{book.setModeDisplay()}" styleClass="btns_edit" />
+                        </h:form>
+                    </h:column>
                     
                 </h:dataTable>
             </ui:define>

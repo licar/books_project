@@ -12,7 +12,6 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import database.MySql;
 import static database.MySql.DATA_SOURCE;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -45,13 +44,12 @@ public class BooksController implements Serializable {
     private Integer numberBooks = 0;
     private Integer genreId = 0;
     
-    
-    
     public void openPageNo(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         noCurPage = Integer.valueOf(params.get("no_page")) - 1;
-        fillBooks();     
+        fillBooks();
     }
+
      
     private void fillBooks(){
         switch (conditionShow){
@@ -388,5 +386,10 @@ public class BooksController implements Serializable {
         deleteBookById(bookId);
         
         setAttributes();
-    }    
+    }
+    
+    public void updateBook(){
+        int i = 1 + 1;
+    }
+
 }
