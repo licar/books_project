@@ -54,10 +54,10 @@ public class BooksController implements Serializable {
     private void fillBooks(){
         switch (conditionShow){
             case ALL:
-                fillAllBooks();
+                fillAllBooksRequest();
                 break;
             case GENRE:
-                fillBooksByGenreId(genreId);
+                fillBooksByGenreIdRequest(genreId);
                 break;
             case TITLE:
                 break;
@@ -68,7 +68,7 @@ public class BooksController implements Serializable {
         }
     }
     
-    private void fillAllBooks()
+    private void fillAllBooksRequest()
     {
         Connection conn = null;
         DataSource dataSource = null;
@@ -124,7 +124,7 @@ public class BooksController implements Serializable {
         }
         books = tempBooks;
     }
-    private void fillBooksByGenreId(Integer genreId)
+    private void fillBooksByGenreIdRequest(Integer genreId)
     {
         Connection conn = null;
         DataSource dataSource = null;
@@ -220,14 +220,13 @@ public class BooksController implements Serializable {
         return noPages;
     }
     
-    
     private void setNumberBooks(){
         switch (conditionShow){
             case ALL:
-                setNumberAllBooks();
+                setNumberAllBooksRequest();
                 break;
             case GENRE:
-                setNumberBooksByGenreId(genreId);
+                setNumberBooksByGenreIdRequest(genreId);
                 break;
             case TITLE:
                 break;
@@ -245,7 +244,7 @@ public class BooksController implements Serializable {
         setNoPages();
     }
     
-    public void setNumberAllBooks()
+    public void setNumberAllBooksRequest()
     {
         Connection conn = null;
         DataSource dataSource = null;
@@ -285,7 +284,7 @@ public class BooksController implements Serializable {
         }
         numberBooks = tempNumberBooks;
     }   
-    private void setNumberBooksByGenreId(Integer genreId)
+    private void setNumberBooksByGenreIdRequest(Integer genreId)
     {
         Connection conn = null;
         DataSource dataSource = null;
@@ -343,8 +342,7 @@ public class BooksController implements Serializable {
         noPages = tempNoPages;
     }
     
-
-    private void deleteBookById(Integer bookId){
+    private void deleteBookByIdRequest(Integer bookId){
         Connection conn = null;
         DataSource dataSource = null;
         Statement statment = null;
@@ -381,14 +379,71 @@ public class BooksController implements Serializable {
     }
    
     public void deleteBook(){
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap();
         Integer bookId = Integer.valueOf(params.get("book_id"));
-        deleteBookById(bookId);
+        deleteBookByIdRequest(bookId);
         
         setAttributes();
     }
     
-    public void updateBook(){
+    private void updateBookRequest(){
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        ArrayList<Book> tempBooks = new ArrayList<>();
+        try{
+            
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+            
+            resultSet = statment.executeQuery(
+                        " SELECT * FROM book, genre" +
+                        " WHERE book.genre_id = genre.genre_id" +
+                        " AND book.genre_id = " + genreId + 
+                        " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
+                             numberBooksOnPage);
+            
+            while (resultSet.next()) {
+                Book book = new Book();
+                Integer id = resultSet.getInt("book_id");
+                book.setId(resultSet.getInt("book_id"));
+                book.setTitle(resultSet.getString("book_title"));
+                book.setDescription(resultSet.getString("book_description"));
+                book.setIsbn(resultSet.getString("book_isbn"));
+                book.setAuthor(resultSet.getString("author"));
+                book.setPublisher(resultSet.getString("publisher"));
+                book.setYear(resultSet.getInt("book_year"));
+                book.setFile(resultSet.getBytes("book_file"));
+                book.setImage(new ImageIcon(resultSet.getBytes("book_image")).getImage());
+                tempBooks.add(book);
+            }
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        books = tempBooks;
+    }
+    
+    public void updateBook(Book book){
         int i = 1 + 1;
     }
 

@@ -79,8 +79,7 @@
                     
                     <h:column>
                         <h:form rendered="#{!book.isDisplayMode()}" >
-                            <h:commandLink action="#{booksContoller.updateBook()}">
-                                <f:param name="book" value ="#{book}"/>
+                            <h:commandLink action="#{booksController.updateBook(book)}">
                                 <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
                             </h:commandLink>
                             <h:commandButton value="cancel" action="#{book.setModeDisplay()}" styleClass="btns_edit" />

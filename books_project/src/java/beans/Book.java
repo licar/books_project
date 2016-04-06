@@ -11,6 +11,7 @@ import java.awt.Image;
  *
  * @author user
  */
+
 public class Book {
     public enum ShowMode {DISPLAY, EDIT};
     
