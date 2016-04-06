@@ -14,10 +14,14 @@
                     
                     <h:column>
                         <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
-                        <h:commandButton action="#{booksController.deleteBook()}" image="/resources/images/delete.png" styleClass="col_image">
-                            <f:param name="book_id" value="#{book.getId()}" />
-                        </h:commandButton>
-                        <h:commandButton image="/resources/images/update.png" styleClass="col_image"/>
+                        <h:form>
+                            <h:commandButton image="/resources/images/update.png" styleClass="col_image"/>
+                            <h:commandLink action="#{booksController.deleteBook()}"> 
+                                <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
+                                <f:param name="book_id" value="#{book.getId()}" />
+                            </h:commandLink>
+                            <h:commandButton image="/resources/images/download.png" styleClass="col_image"/>
+                        </h:form>
                     </h:column>
                     
                     <h:column>

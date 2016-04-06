@@ -34,7 +34,6 @@ import javax.swing.ImageIcon;
 @ManagedBean
 public class BooksController implements Serializable {
     
-    
     public enum ConditionsShow { ALL, GENRE, AUTHOR, TITLE, PUBLISHER};
     private ArrayList<Book> books = new ArrayList<Book>();
     private ArrayList<Integer> noPages = new ArrayList<Integer>();
@@ -54,9 +53,6 @@ public class BooksController implements Serializable {
         fillBooks();     
     }
      
-
-    
-    
     private void fillBooks(){
         switch (conditionShow){
             case ALL:
@@ -349,8 +345,7 @@ public class BooksController implements Serializable {
         noPages = tempNoPages;
     }
     
-    
-    
+
     private void deleteBookById(Integer bookId){
         Connection conn = null;
         DataSource dataSource = null;
@@ -361,10 +356,11 @@ public class BooksController implements Serializable {
             dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
             conn = dataSource.getConnection();
             statment = conn.createStatement();
-            statment.executeQuery(
-                    "DELETE FROM books" +
-                    " WHERE books.book_id = " + bookId);
             
+            statment.executeUpdate(
+                    "DELETE FROM book " +
+                    "WHERE book.book_id = " + bookId);
+        
         } catch (NamingException ex) {
             Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
