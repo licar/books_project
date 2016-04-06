@@ -14,79 +14,73 @@
                     
                     <h:column>
                         <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
-                        <h:form>
+
+                        <h:form rendered="#{book.isDisplayMode()}">
                             <h:commandLink action="#{book.setModeEdit()}"> 
                                 <h:graphicImage library="images" name = "update.png" styleClass="col_image"/>
                             </h:commandLink>
                             <h:commandLink action="#{booksController.deleteBook()}"> 
                                 <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
-                                <f:param name="book_id" value="#{book.getId()}" />
+                                <f:param name="book_id" value="#{book.id}" />
                             </h:commandLink>
-                            <h:commandButton image="/resources/images/download.png" styleClass="col_image"/>
+                            <h:commandButton image="/resources/images/download.png" styleClass="col_image" rendered="#{book.isDisplayMode()}"/>
                         </h:form>
-                    </h:column>
-                    
-                    <h:column>
                         <h:form rendered="#{!book.isDisplayMode()}" >
-                            <table>
-                                <tr>
-                                    <td><h:inputText binding="#{title}" value="#{book.getTitle()}"/></td>
-                                </tr>
-                                <tr>
-                                    <td><h:inputText value="#{book.getYear()}"/></td>
-                                </tr>
-                                <tr>
-                                    <td><h:inputText value="#{book.getAuthor()}"/></td>
-                                </tr>
-                                <tr>
-                                    <td><h:inputText value="#{book.getPublisher()}"/></td>
-                                </tr>
-                                <tr>
-                                    <td><h:inputText value="#{book.getIsbn()}"/></td>
-                                </tr>
-                            </table>
-                        </h:form>
-                        <h:form rendered="#{book.isDisplayMode()}" >
-                            <table>
-                                <tr>
-                                    <td><h4>#{book.getTitle()}</h4></td>
-                                </tr>
-                                <tr>
-                                    <td>#{book.getYear()}</td>
-                                </tr>
-                                <tr>
-                                    <td>#{book.getAuthor()}</td>
-                                </tr>
-                                <tr>
-                                    <td>#{book.getPublisher()}</td>
-                                </tr>
-                                <tr>
-                                    <td>#{book.getIsbn()}</td>
-                                </tr>
-                            </table>
-                        </h:form>
-                    </h:column>
-                    
-                    <h:column>
-                        <h:form rendered="#{!book.isDisplayMode()}" >
-                            <h:inputTextarea value="#{book.getDescription()}" cols="30"  rows="7" />
-                        </h:form>
-                        <h:form rendered="#{book.isDisplayMode()}" >
-                            <h:outputText  value="#{book.getDescription()}"/>
-                        </h:form>
-                    </h:column> 
-                    
-                    
-                    <h:column>
-                        <h:form rendered="#{!book.isDisplayMode()}" >
-                            <h:commandLink action="#{booksController.updateBook()}">
-                                <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
-                                <f:param name="title" value="#{title}"/> 
+                            <h:commandLink action="#{booksController.updateBook(title.value)}">
+                                <h:commandButton value="ok" styleClass="btns_edit" />
                             </h:commandLink>
                             <h:commandButton value="cancel" action="#{book.setModeDisplay()}" styleClass="btns_edit" />
                         </h:form>
                     </h:column>
                     
+                    <h:column>
+                        <h:form>
+                            <table border="1">
+                                <tr>
+                                    <td><h:outputText value="название:" styleClass="attr_description"/></td>
+                                    <td>
+                                        <h:inputText value="#{book.title}" rendered="#{!book.isDisplayMode()}"/>
+                                        <h:outputText value="#{book.title}" rendered="#{book.isDisplayMode()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="год:" styleClass="attr_description"/></td>
+                                    <td>
+                                        <h:inputText value="#{book.year}" rendered="#{!book.isDisplayMode()}"/>
+                                        <h:outputText value="#{book.year}" rendered="#{book.isDisplayMode()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="автор:" styleClass="attr_description"/></td>
+                                    <td>
+                                        <h:inputText value="#{book.author}" rendered="#{!book.isDisplayMode()}"/>
+                                        <h:outputText value="#{book.author}" rendered="#{book.isDisplayMode()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="издательство:" styleClass="attr_description"/></td>
+                                    <td>
+                                        <h:inputText value="#{book.publisher}" rendered="#{!book.isDisplayMode()}"/>
+                                        <h:outputText value="#{book.publisher}" rendered="#{book.isDisplayMode()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><h:outputText value="исбн:" styleClass="attr_description"/></td>
+                                    <td>
+                                        <h:inputText value="#{book.isbn}" rendered="#{!book.isDisplayMode()}"/>
+                                        <h:outputText value="#{book.isbn}" rendered="#{book.isDisplayMode()}"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </h:form>
+                    </h:column>
+                    
+                    <h:column>
+                        <h:form>
+                            <h:inputTextarea value="#{book.description}" cols="30"  rows="7" rendered="#{!book.isDisplayMode()}"/>
+                            <h:outputText  value="#{book.description}" rendered="#{book.isDisplayMode()}" />
+                        </h:form>
+                    </h:column>         
                 </h:dataTable>
             </ui:define>
             
@@ -107,8 +101,8 @@
             <ui:define name="left_menu">
                 <ui:repeat value="#{genresController.getGenres()}" var="genre">
                     <h:form>
-                        <h:commandLink  value="#{genre.getName()}" action="#{booksController.openBooksByGenre()}">
-                            <f:param name="genre_id" value="#{genre.getId()}"/>
+                        <h:commandLink  value="#{genre.name}" action="#{booksController.openBooksByGenre()}">
+                            <f:param name="genre_id" value="#{genre.id}"/>
                         </h:commandLink>
                      </h:form>
                 </ui:repeat>

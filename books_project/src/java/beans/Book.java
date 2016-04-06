@@ -6,6 +6,9 @@
 package beans;
 
 import java.awt.Image;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.mail.MailSessionDefinition;
 
 /**
  *
@@ -24,13 +27,13 @@ public class Book {
     private String isbn;
     private Image image;
     private byte[] file;
-    private boolean changed = false;
     private ShowMode showMode = ShowMode.DISPLAY;   
 
     public Book() {
     }
     
     public Book(Integer id, String title, String description, String author, String publisher, Integer year, String isbn, Image image, byte[] file) {
+        this.showMode = ShowMode.DISPLAY;
         this.id = id;
         this.title = title;
         this.description = description;
@@ -114,20 +117,16 @@ public class Book {
         this.year = year;
     }
     
-    public boolean isChanged(){
-        return this.changed;
-    }
-    
-    public void change(){
-        this.changed = true;
-    } 
-    
     public void setModeDisplay(){
         this.showMode = ShowMode.DISPLAY;
     }
     
     public void setModeEdit(){
         this.showMode = ShowMode.EDIT;
+    }
+
+    public void setShowMode(ShowMode showMode) {
+        this.showMode = showMode;
     }
     
     public ShowMode getShowMode(){

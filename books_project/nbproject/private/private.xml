@@ -5,7 +5,12 @@
         <group>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/index.xhtml</file>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/contollers/BooksController.java</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/templates/header.xhtml</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/templates/left_menu.xhtml</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/templates/content.xhtml</file>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/beans/Book.java</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/templates/books_template.xhtml</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/beans/Genre.java</file>
         </group>
     </open-files>
 </project-private>

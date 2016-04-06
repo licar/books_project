@@ -19,8 +19,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.context.ExternalContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import javax.swing.ImageIcon;
 
@@ -49,8 +51,7 @@ public class BooksController implements Serializable {
         noCurPage = Integer.valueOf(params.get("no_page")) - 1;
         fillBooks();
     }
-
-     
+  
     private void fillBooks(){
         switch (conditionShow){
             case ALL:
@@ -444,9 +445,10 @@ public class BooksController implements Serializable {
     }
     
     public void updateBook(){
-        conditionShow = conditionShow.GENRE;
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String title = String.valueOf(params.get("title"));
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap();
+        //Integer bookId = Integer.valueOf(params.get("book_id"));
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        String title = ec.getRequestParameterMap().get("ada" + ":title");
         int i = 0;
         
     }
