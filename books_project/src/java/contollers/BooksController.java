@@ -13,6 +13,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import static database.MySql.DATA_SOURCE;
+import enums.enums.ConditionsShow;
+import enums.enums.ShowMode;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,8 +35,9 @@ import javax.swing.ImageIcon;
 @ManagedBean
 public class BooksController implements Serializable {
     
-    public enum ConditionsShow { ALL, GENRE, AUTHOR, TITLE, PUBLISHER};
+    
     private ArrayList<Book> books = new ArrayList<Book>();
+    private ArrayList<Book> booksCopy = new ArrayList<Book>();
     private ArrayList<Integer> noPages = new ArrayList<Integer>();
     
     private ConditionsShow conditionShow = ConditionsShow.ALL;
@@ -43,6 +46,7 @@ public class BooksController implements Serializable {
     private Integer curGenreId = 0;
     private Integer numberBooks = 0;
     private Integer genreId = 0;
+    private ShowMode showMode = ShowMode.DISPLAY;
     
     public void openPageNo(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -379,8 +383,7 @@ public class BooksController implements Serializable {
    
     public void deleteBook(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        Integer bookId = 0;
-        bookId = Integer.valueOf(params.get("book_id"));
+        Integer bookId = Integer.valueOf(params.get("book_id"));
         deleteBookByIdRequest(bookId);
         setAttributes();
     }
@@ -448,8 +451,23 @@ public class BooksController implements Serializable {
         bookId = Integer.valueOf(params.get("book_id"));
         //ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         //String title = ec.getRequestParameterMap().get("ada" + ":title");
-        int i = 0;
-        
+        int i = 0;   
     }
-
+    
+    public void setModeDisplay(){
+        this.showMode = ShowMode.DISPLAY;
+        setAttributes();
+    }
+    
+    public void setModeEdit(){
+        this.showMode = ShowMode.EDIT;
+    }
+    
+    public ShowMode getModeShow(){
+        return this.showMode;
+    }
+    
+    public boolean isModeDisplay(){
+        return showMode == ShowMode.DISPLAY;
+    }
 }

@@ -13,8 +13,6 @@ import java.awt.Image;
  */
 
 public class Book {
-    public enum ShowMode {DISPLAY, EDIT};
-    
     private Integer id;
     private String title;
     private String description;
@@ -23,9 +21,9 @@ public class Book {
     private Integer year;
     private String isbn;
     private Image image;
-    private byte[] file;
-    private ShowMode showMode = ShowMode.DISPLAY;   
-
+    private byte[] file;  
+    private boolean edited = false;
+    
     public Book() {
     }
     
@@ -113,24 +111,15 @@ public class Book {
         this.year = year;
     }
     
-    public void setModeDisplay(){
-        this.showMode = ShowMode.DISPLAY;
+    public void setEdited(){
+        edited = true;
     }
     
-    public void setModeEdit(){
-        this.showMode = ShowMode.EDIT;
-    }
-
-    public void setShowMode(ShowMode showMode) {
-        this.showMode = showMode;
+    public void setUnedited(){
+        edited = false;
     }
     
-    public ShowMode getShowMode(){
-        return this.showMode;
+    public boolean isEdited(){
+        return edited == true;
     }
-    
-    public boolean isDisplayMode(){
-        return showMode == ShowMode.DISPLAY;
-    }
-    
 }
