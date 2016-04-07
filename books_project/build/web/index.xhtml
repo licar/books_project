@@ -13,23 +13,31 @@
                 <h:dataTable value="#{booksController.getBooks()}" var="book"  border="1">
                     
                     <h:column>
-                        <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
+                        <h:form>
+                            <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
 
-                        <h:form rendered="#{book.isDisplayMode()}">
-                            <h:commandLink action="#{book.setModeEdit()}"> 
-                                <h:graphicImage library="images" name = "update.png" styleClass="col_image"/>
-                            </h:commandLink>
-                            <h:commandLink action="#{booksController.deleteBook()}"> 
-                                <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
-                                <f:param name="book_id" value="#{book.id}" />
-                            </h:commandLink>
-                            <h:commandButton image="/resources/images/download.png" styleClass="col_image" rendered="#{book.isDisplayMode()}"/>
-                        </h:form>
-                        <h:form rendered="#{!book.isDisplayMode()}" >
-                            <h:commandLink action="#{booksController.updateBook(title.value)}">
-                                <h:commandButton value="ok" styleClass="btns_edit" />
-                            </h:commandLink>
-                            <h:commandButton value="cancel" action="#{book.setModeDisplay()}" styleClass="btns_edit" />
+                            <h:panelGroup>
+                                <h:panelGroup rendered="#{book.isDisplayMode()}">
+                                    <h:commandLink immediate="true" action="#{book.setModeEdit()}"> 
+                                        <h:graphicImage library="images" name = "update.png" styleClass="col_image"/>
+                                    </h:commandLink>
+                                    <h:commandLink action="#{booksController.deleteBook()}"> 
+                                        <f:param name="book_id" value="#{book.id}" />
+                                        <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
+                                    </h:commandLink>
+                                    <h:commandButton image="/resources/images/download.png" styleClass="col_image" rendered="#{book.isDisplayMode()}"/>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{!book.isDisplayMode()}" >
+                                    <h:commandLink immediate="true" action="#{booksController.updateBook()}">
+                                        <h:commandButton value="ok" styleClass="btns_edit" />
+                                    </h:commandLink>
+                                    <h:commandButton immediate="true" value="cancel" action="#{book.setModeDisplay()}" styleClass="btns_edit" />
+                                </h:panelGroup>                            
+                            </h:panelGroup>
+
+                            <h:panelGroup id="user" rendered="#{false}">
+                                <h:commandButton image="/resources/images/download.png" styleClass="col_image"/>                           
+                            </h:panelGroup>
                         </h:form>
                     </h:column>
                     
@@ -76,10 +84,8 @@
                     </h:column>
                     
                     <h:column>
-                        <h:form>
-                            <h:inputTextarea value="#{book.description}" cols="30"  rows="7" rendered="#{!book.isDisplayMode()}"/>
-                            <h:outputText  value="#{book.description}" rendered="#{book.isDisplayMode()}" />
-                        </h:form>
+                        <h:inputTextarea value="#{book.description}" cols="30"  rows="7" rendered="#{!book.isDisplayMode()}"/>
+                        <h:outputText  value="#{book.description}" rendered="#{book.isDisplayMode()}" />
                     </h:column>         
                 </h:dataTable>
             </ui:define>
@@ -95,6 +101,9 @@
             </ui:define>
             
             <ui:define name="username">
+                <h:form>
+                    
+                </h:form>
                 котопек
             </ui:define>
             
