@@ -29,15 +29,14 @@
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{!book.isDisplayMode()}" >
                                     <h:commandLink immediate="true" action="#{booksController.updateBook()}">
+                                        <f:param name="book_id" value="#{book.id}"/>
                                         <h:commandButton value="ok" styleClass="btns_edit" />
                                     </h:commandLink>
                                     <h:commandButton immediate="true" value="cancel" action="#{book.setModeDisplay()}" styleClass="btns_edit" />
                                 </h:panelGroup>                            
                             </h:panelGroup>
 
-                            <h:panelGroup id="user" rendered="#{false}">
-                                <h:commandButton image="/resources/images/download.png" styleClass="col_image"/>                           
-                            </h:panelGroup>
+
                         </h:form>
                     </h:column>
                     
@@ -91,13 +90,13 @@
             </ui:define>
             
             <ui:define name="no_pages">
-                <h:form>
+                
                     <ui:repeat value="#{booksController.getNoPages()}" var="noPage">
                         <h:commandLink  value="#{noPage}" action="#{booksController.openPageNo()}">
                             <f:param name="no_page" value="#{noPage}"/>
                         </h:commandLink>
                     </ui:repeat>
-                </h:form>
+                
             </ui:define>
             
             <ui:define name="username">

@@ -378,10 +378,10 @@ public class BooksController implements Serializable {
     }
    
     public void deleteBook(){
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap();
-        Integer bookId = Integer.valueOf(params.get("book_id"));
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        Integer bookId = 0;
+        bookId = Integer.valueOf(params.get("book_id"));
         deleteBookByIdRequest(bookId);
-        
         setAttributes();
     }
     
@@ -443,11 +443,12 @@ public class BooksController implements Serializable {
     }
     
     public void updateBook(){
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getInitParameterMap();
-        Integer bookId = Integer.valueOf(params.get("book_id"));
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        Integer bookId = 0;
+        bookId = Integer.valueOf(params.get("book_id"));
         //ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         //String title = ec.getRequestParameterMap().get("ada" + ":title");
-        //int i = 0;
+        int i = 0;
         
     }
 
