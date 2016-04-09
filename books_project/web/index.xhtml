@@ -12,95 +12,92 @@
     <h:body>
         <ui:composition template="/templates/books_template.xhtml">
             <ui:define name="content_books" >
+            <h:form>
+                <h:commandButton value="редактировать:" action="#{booksController.setModeEdit()}" rendered="#{booksController.isModeDisplay()}"/>
+                <h:commandButton value="сохранить:" action="#{booksController.setModeDisplay()}" rendered="#{!booksController.isModeDisplay()}"/>
+                <h:commandButton immediate="true" value="отменить:" action="#{booksController.setModeDisplay()}" rendered="#{!booksController.isModeDisplay()}"/>
                 <h:dataTable value="#{booksController.getBooks()}" var="book"  border="1">
                     
                     <h:column>
-                        <h:form>
-                            <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
+                        <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
+                        
+                        <h:commandLink action="#{booksController.deleteBook()}" rendered="#{booksController.isModeDisplay()}"> 
+                            <f:param name="book_id" value="#{book.id}" />
+                            <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
+                        </h:commandLink>
 
-                            <h:panelGroup>
-                                <h:panelGroup rendered="#{booksController.isModeDisplay()}">
-                                    <h:commandLink immediate="true" action="#{booksController.setModeEdit()}"> 
-                                        <h:graphicImage library="images" name = "update.png" styleClass="col_image"/>
-                                    </h:commandLink>
-                                    <h:commandLink action="#{booksController.deleteBook()}"> 
-                                        <f:param name="book_id" value="#{book.id}" />
-                                        <h:graphicImage library="images" name = "delete.png" styleClass="col_image"/>
-                                    </h:commandLink>
-                                    <h:commandButton image="/resources/images/download.png" styleClass="col_image"/>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{!booksController.isModeDisplay()}" >
-                                    <h:commandLink immediate="true" action="#{booksController.updateBook()}">
-                                        <f:param name="book_id" value="#{book.id}"/>
-                                        <h:commandButton value="ok" styleClass="btns_edit" />
-                                    </h:commandLink>                                    
-                                    <h:commandButton immediate="true" value="cancel" action="#{booksController.setModeDisplay()}" styleClass="btns_edit" />
-                                </h:panelGroup>                            
-                            </h:panelGroup>
-                            
-                            <h:panelGroup rendered="#{false}">
-                                <h:commandButton image="/resources/images/download.png" styleClass="col_image" rendered="#{booksController.isModeDisplay()}"/>
-                            </h:panelGroup>
-                        </h:form>
+                        <h:panelGroup rendered="#{!booksController.isModeDisplay()}">
+                            <h:commandLink immediate="true"   action="#{book.setEdit()}" rendered="#{!book.isEdit()}">
+                                <h:commandButton value="редактировать"/>
+                            </h:commandLink>
+                        </h:panelGroup>                            
+                        
+                        <h:panelGroup rendered="#{booksController.isModeDisplay()}">
+                            <h:commandButton immediate="true" image="/resources/images/download.png" styleClass="col_image"/>
+                        </h:panelGroup>
                     </h:column>
                     
                     <h:column>
-                        <h:form>
-                            <table border="1">
-                                <tr>
-                                    <td><h:outputText value="название:" styleClass="attr_description"/></td>
-                                    <td>
-                                        <h:inputText id="title" value="#{book.title}" rendered="#{!booksController.isModeDisplay()}">
-                                            <f:ajax immediate="true" event="keyup" execute="@form" render="@form" listener="#{book.setEdited()}"/>
-                                        </h:inputText>
-                                        <h:outputText value="#{book.title}" rendered="#{booksController.isModeDisplay()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><h:outputText value="год:" styleClass="attr_description"/></td>
-                                    <td>
-                                        <h:inputText id="year" value="#{book.year}" rendered="#{!booksController.isModeDisplay()}">
-                                            <f:ajax  immediate="true" event="keyup" execute="@form" render="@form" listener="#{book.setEdited()}"/>
-                                        </h:inputText>
-                                        <h:outputText value="#{book.year}" rendered="#{booksController.isModeDisplay()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><h:outputText value="автор:" styleClass="attr_description"/></td>
-                                    <td>
-                                        <h:inputText id="author" value="#{book.author}" rendered="#{!booksController.isModeDisplay()}">
-                                            <f:ajax immediate="true" event="keyup" execute="@form" render="@form" listener="#{book.setEdited()}"/>
-                                        </h:inputText>
-                                        <h:outputText value="#{book.author}" rendered="#{booksController.isModeDisplay()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><h:outputText value="издательство:" styleClass="attr_description"/></td>
-                                    <td>
-                                        <h:inputText id="publisher" value="#{book.publisher}" rendered="#{!booksController.isModeDisplay()}">
-                                            <f:ajax immediate="true" event="keyup" execute="@form" render="@form" listener="#{book.setEdited()}"/>
-                                        </h:inputText>
-                                        <h:outputText  value="#{book.publisher}" rendered="#{booksController.isModeDisplay()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><h:outputText value="исбн:" styleClass="attr_description"/></td>
-                                    <td>
-                                        <h:inputText id="isbn" value="#{book.isbn}" rendered="#{!booksController.isModeDisplay()}">
-                                            <f:ajax immediate="true" event="keyup" execute="@form" render="@form" listener="#{book.setEdited()}"/>
-                                        </h:inputText>
-                                        <h:outputText value="#{book.isbn}" rendered="#{booksController.isModeDisplay()}"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </h:form>
+                        <table border="1">
+                            <tr>
+                                <td><h:outputText value="название:" styleClass="attr_description"/></td>
+                                <td>
+                                    <h:inputText id="title" value="#{book.title}" rendered="#{!booksController.isModeDisplay() and book.isEdit()}" validator="validators.TitleValidator" validatorMessage="lol" >
+                                        <f:ajax event="change" execute="@form" render="@form"/>
+                                    </h:inputText>
+                                    <h:message for="title"/>
+                                    <h:outputText value="#{book.title}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="год:" styleClass="attr_description"/></td>
+                                <td>
+                                    <h:inputText id="year" value="#{book.year}" rendered="#{!booksController.isModeDisplay()  and book.isEdit()}" validator="validators.YearValidator" validatorMessage="lol">
+                                        <f:ajax event="change" execute="@form" render="@form"/>
+                                    </h:inputText>
+                                    <h:message for="year"/>
+                                    <h:outputText value="#{book.year}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="автор:" styleClass="attr_description"/></td>
+                                <td>
+                                    <h:inputText id="author"  value="#{book.author}" rendered="#{!booksController.isModeDisplay()  and book.isEdit()}" validator="validators.AuthorValidator" validatorMessage="lol">
+                                        <f:ajax event="change" execute="@form" render="@form"/>
+                                    </h:inputText>
+                                    <h:message for="author"/>
+                                    <h:outputText value="#{book.author}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="издательство:" styleClass="attr_description"/></td>
+                                <td>
+                                    <h:inputText id="publisher" value="#{book.publisher}" rendered="#{!booksController.isModeDisplay()  and book.isEdit()}" validator="validators.PublisherValidator" validatorMessage="lol">
+                                        <f:ajax event="change" execute="@this" render="@this"/>
+                                    </h:inputText>
+                                    <h:message for="publisher"/>
+                                    <h:outputText  value="#{book.publisher}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h:outputText value="исбн:" styleClass="attr_description"/></td>
+                                <td>
+                                    <h:inputText id="isbn" value="#{book.isbn}" rendered="#{!booksController.isModeDisplay()  and book.isEdit()}" validator="validators.IsbnValidator" validatorMessage="lol">
+                                        <f:ajax event="change" execute="@form" render="@form"/>
+                                    </h:inputText>
+                                    <h:message for="isbn"/>
+                                    <h:outputText value="#{book.isbn}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
+                                </td>
+                            </tr>
+                        </table>
                     </h:column>
                     
                     <h:column>
-                        <h:inputTextarea id="description" value="#{book.description}" cols="30"  rows="7" rendered="#{!booksController.isModeDisplay()}"/>
-                        <h:outputText value="#{book.description}" rendered="#{booksController.isModeDisplay()}" />
+                        <h:inputTextarea id="description" value="#{book.description}" cols="30"  rows="7" rendered="#{!booksController.isModeDisplay() and book.isEdit()}"/>
+                        <h:outputText value="#{book.description}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}" />
                     </h:column>         
                 </h:dataTable>
+            </h:form>
             </ui:define>
             
             <ui:define name="no_pages">
@@ -129,7 +126,6 @@
                      </h:form>
                 </ui:repeat>
             </ui:define>
-            
         </ui:composition>
         
     </h:body>

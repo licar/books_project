@@ -5,9 +5,12 @@
         <group>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/index.xhtml</file>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/contollers/BooksController.java</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/validators/AuthorValidator.java</file>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/locales/messages.properties</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/validators/YearValidator.java</file>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/validators/TitleValidator.java</file>
-            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/beans/Book.java</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/validators/PublisherValidator.java</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/validators/IsbnValidator.java</file>
         </group>
     </open-files>
 </project-private>

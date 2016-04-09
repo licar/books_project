@@ -22,7 +22,7 @@ public class Book {
     private String isbn;
     private Image image;
     private byte[] file;  
-    private boolean edited = false;
+    private boolean edit = false;
     
     public Book() {
     }
@@ -111,15 +111,15 @@ public class Book {
         this.year = year;
     }
     
-    public void setEdited(){
-        edited = true;
+    public void setEdit(){
+        edit = true;
     }
     
-    public void setUnedited(){
-        edited = false;
+    public void setUnedit(){
+        edit = false;
     }
     
-    public boolean isEdited(){
-        return edited == true;
+    public boolean isEdit(){
+        return edit == true;
     }
 }

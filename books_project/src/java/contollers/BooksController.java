@@ -463,10 +463,6 @@ public class BooksController implements Serializable {
         this.showMode = ShowMode.EDIT;
     }
     
-    public ShowMode getModeShow(){
-        return this.showMode;
-    }
-    
     public boolean isModeDisplay(){
         return showMode == ShowMode.DISPLAY;
     }

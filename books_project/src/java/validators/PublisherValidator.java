@@ -5,6 +5,7 @@
  */
 package validators;
 
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -17,8 +18,8 @@ import javax.faces.validator.ValidatorException;
  *
  * @author user
  */
-@FacesValidator("validators.TitleValidator")
-public class TitleValidator implements Validator {
+@FacesValidator("validators.PublisherValidator")
+public class PublisherValidator implements Validator {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {

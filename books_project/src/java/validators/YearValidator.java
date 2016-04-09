@@ -5,6 +5,7 @@
  */
 package validators;
 
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -17,14 +18,15 @@ import javax.faces.validator.ValidatorException;
  *
  * @author user
  */
-@FacesValidator("validators.TitleValidator")
-public class TitleValidator implements Validator {
+@FacesValidator("validators.YearValidator")
+public class YearValidator implements Validator {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        if (value.toString().length() == 0){
+        Integer year = Calendar.getInstance().get(Calendar.YEAR);
+        if (value == null || Integer.getInteger(value.toString()) > year){
             ResourceBundle bundle = ResourceBundle.getBundle("locales.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-            FacesMessage message = new FacesMessage(bundle.getString("invalid_title"));
+            FacesMessage message = new FacesMessage(bundle.getString("invalid_year"));
             message.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(message); //To change body of generated methods, choose Tools | Templates.
         }
