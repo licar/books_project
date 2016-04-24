@@ -10,6 +10,6 @@ package enums;
  * @author user
  */
 public class enums {
-    public enum ShowMode {DISPLAY, EDIT};
+    public enum ShowMode {DISPLAY, EDIT, CREATE};
     public enum ConditionsShow { ALL, GENRE, AUTHOR, TITLE, PUBLISHER};
 }

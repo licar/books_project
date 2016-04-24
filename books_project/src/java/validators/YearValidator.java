@@ -23,12 +23,16 @@ public class YearValidator implements Validator {
 
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        Integer year = Calendar.getInstance().get(Calendar.YEAR);
-        if (value == null || Integer.getInteger(value.toString()) > year){
-            ResourceBundle bundle = ResourceBundle.getBundle("locales.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-            FacesMessage message = new FacesMessage(bundle.getString("invalid_year"));
-            message.setSeverity(FacesMessage.SEVERITY_ERROR);
-            throw new ValidatorException(message); //To change body of generated methods, choose Tools | Templates.
+        ResourceBundle bundle = ResourceBundle.getBundle("locales.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+        FacesMessage message = new FacesMessage(bundle.getString("invalid_year"));
+        try {
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            if (Integer.parseInt(value.toString()) > year || Integer.parseInt(value.toString()) < 0 ){
+                message.setSeverity(FacesMessage.SEVERITY_ERROR); 
+                throw new ValidatorException(message); //To change body of generated methods, choose Tools | Templates.
+            }
+        } catch (NullPointerException ex){
+            throw new ValidatorException(message);
         }
     }
     

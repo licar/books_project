@@ -13,7 +13,8 @@
         <ui:composition>
             <div class="top"> 
                 <h:form>
-                    <h:commandButton image="/resources/images/logo.png" styleClass="img_logo"  action="#{booksController.openAllBooks()}"/>
+                    <h:commandButton image="/resources/images/logo.png" styleClass="img_logo"  action="#{booksController.showAllBooks()}" rendered="#{booksController.isModeDisplay()}"/>
+                    <h:graphicImage library="images"  name="logo.png" styleClass="img_logo" rendered="#{!booksController.isModeDisplay()}" />
                 </h:form>
                 <div class="txt_title">
                     Welcome

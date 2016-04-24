@@ -6,6 +6,11 @@
 package beans;
 
 import java.awt.Image;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,14 +25,17 @@ public class Book {
     private String publisher;
     private Integer year;
     private String isbn;
-    private Image image;
-    private byte[] file;  
+    private byte[] image;
+    private byte[] file; 
+    private String imageName;
     private boolean edit = false;
+    private String pathToImage;
+    private Integer genreId;
     
     public Book() {
     }
     
-    public Book(Integer id, String title, String description, String author, String publisher, Integer year, String isbn, Image image, byte[] file) {
+    public Book(Integer id, String title, String description, String author, String publisher, Integer year, String isbn, byte[] image, byte[] file) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -38,7 +46,15 @@ public class Book {
         this.image = image;
         this.file = file;
     }
-
+    
+    public Integer getGenreId(){
+        return this.genreId;
+    }
+    
+    public void setGenreId(Integer genreId){
+        this.genreId = genreId;
+    }
+    
     public String getAuthor() {
         return author;
     }
@@ -55,7 +71,7 @@ public class Book {
         return id;
     }
 
-    public Image getImage() {
+    public byte[] getImage() {
         return image;
     }
 
@@ -91,7 +107,7 @@ public class Book {
         this.id = id;
     }
 
-    public void setImage(Image image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
@@ -121,5 +137,21 @@ public class Book {
     
     public boolean isEdit(){
         return edit == true;
+    }
+    
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+    
+    public String getImageName(){
+        return this.imageName;
+    }
+    
+    public String getPathToImage(){
+        return pathToImage;
+    }
+    
+    public void setPathToImage(String pathToImage){
+        this.pathToImage = pathToImage;
     }
 }

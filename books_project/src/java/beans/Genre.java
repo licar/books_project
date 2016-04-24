@@ -12,7 +12,7 @@ package beans;
  */
 
 public class Genre{
-    private Integer id;
+private Integer id;
     private String name;
     
     public Genre(){

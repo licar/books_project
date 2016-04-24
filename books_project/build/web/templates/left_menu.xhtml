@@ -12,6 +12,14 @@
     <h:body>
         
         <ui:composition>
+            <ui:repeat value="#{genresController.getGenres()}" var="genre">
+                <h:form>
+                    <h:commandLink  value="#{genre.name}" action="#{booksController.showBooksByGenre()}" rendered="#{booksController.isModeDisplay()}">
+                        <f:param name="genre_id" value="#{genre.id}"/>
+                    </h:commandLink>
+                    <h:outputText value="#{genre.name}" rendered="#{!booksController.isModeDisplay()}"/>
+                 </h:form>
+            </ui:repeat>
         </ui:composition>
 
     </h:body>

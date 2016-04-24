@@ -6,25 +6,29 @@
 package contollers;
 
 import beans.Book;
+import beans.Genre;
+import database.MySql;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import static database.MySql.DATA_SOURCE;
 import enums.enums.ConditionsShow;
 import enums.enums.ShowMode;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import javax.swing.ImageIcon;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.servlet.http.Part;
 
 
 /**
@@ -35,13 +39,17 @@ import javax.swing.ImageIcon;
 @ManagedBean
 public class BooksController implements Serializable {
     
+    public final static String PATH_TO_FILE = "/var/webapp/";
+    private MySql database = new MySql();
+    private Book newBook = new Book();
+    private Part image;
     
     private ArrayList<Book> books = new ArrayList<Book>();
     private ArrayList<Book> booksCopy = new ArrayList<Book>();
     private ArrayList<Integer> noPages = new ArrayList<Integer>();
     
     private ConditionsShow conditionShow = ConditionsShow.ALL;
-    private Integer numberBooksOnPage = 4;
+    private Integer numberBooksOnPage = 3;
     private Integer noCurPage = 0;
     private Integer curGenreId = 0;
     private Integer numberBooks = 0;
@@ -57,10 +65,10 @@ public class BooksController implements Serializable {
     private void fillBooks(){
         switch (conditionShow){
             case ALL:
-                fillAllBooksRequest();
+                books = database.getAllBooks(numberBooksOnPage, noCurPage);
                 break;
             case GENRE:
-                fillBooksByGenreIdRequest(genreId);
+                books = database.getBooksByGenreId(genreId, numberBooksOnPage, noCurPage);
                 break;
             case TITLE:
                 break;
@@ -71,126 +79,12 @@ public class BooksController implements Serializable {
         }
     }
     
-    private void fillAllBooksRequest()
-    {
-        Connection conn = null;
-        DataSource dataSource = null;
-        Statement statment = null;
-        ResultSet resultSet = null;
-        ArrayList<Book> tempBooks = new ArrayList();
-        try{
-            InitialContext initialContext = new InitialContext();
-            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
-            
-            conn = dataSource.getConnection();
-            statment = conn.createStatement();
-            
-            resultSet = statment.executeQuery(
-                    "SELECT * FROM book, genre" +
-                    " WHERE book.genre_id = genre.genre_id" +
-                    " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
-                    numberBooksOnPage);
-            
-            
-            while (resultSet.next()) {
-                Book book = new Book();
-                book.setId(resultSet.getInt("book_id"));
-                book.setTitle(resultSet.getString("book_title"));
-                book.setDescription(resultSet.getString("book_description"));
-                book.setIsbn(resultSet.getString("book_isbn"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setPublisher(resultSet.getString("publisher"));
-                book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(new ImageIcon(resultSet.getBytes("book_image")).getImage());
-                tempBooks.add(book);
-            }
-            
-        } catch (NamingException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            try {
-                if (statment != null){
-                    statment.close();
-                }
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (conn != null){
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        books = tempBooks;
-    }
-    private void fillBooksByGenreIdRequest(Integer genreId)
-    {
-        Connection conn = null;
-        DataSource dataSource = null;
-        Statement statment = null;
-        ResultSet resultSet = null;
-        ArrayList<Book> tempBooks = new ArrayList<>();
-        try{
-            
-            InitialContext initialContext = new InitialContext();
-            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
-            conn = dataSource.getConnection();
-            statment = conn.createStatement();
-            
-            resultSet = statment.executeQuery(
-                        " SELECT * FROM book, genre" +
-                        " WHERE book.genre_id = genre.genre_id" +
-                        " AND book.genre_id = " + genreId + 
-                        " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
-                             numberBooksOnPage);
-            
-            while (resultSet.next()) {
-                Book book = new Book();
-                Integer id = resultSet.getInt("book_id");
-                book.setId(resultSet.getInt("book_id"));
-                book.setTitle(resultSet.getString("book_title"));
-                book.setDescription(resultSet.getString("book_description"));
-                book.setIsbn(resultSet.getString("book_isbn"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setPublisher(resultSet.getString("publisher"));
-                book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(new ImageIcon(resultSet.getBytes("book_image")).getImage());
-                tempBooks.add(book);
-            }
-            
-        } catch (NamingException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            try {
-                if (statment != null){
-                    statment.close();
-                }
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (conn != null){
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        books = tempBooks;
-    }
-       
-    public void openAllBooks(){
+    public void showAllBooks(){
         conditionShow = conditionShow.ALL;
         setAttributes();
     }
     
-    public void openBooksByGenre()
+    public void showBooksByGenre()
     {
         conditionShow = conditionShow.GENRE;
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -216,20 +110,13 @@ public class BooksController implements Serializable {
         return this.noCurPage;
     }
     
-    public ArrayList<Integer> getNoPages(){
-        if (noPages.isEmpty()){
-            setAttributes();
-        }
-        return noPages;
-    }
-    
     private void setNumberBooks(){
         switch (conditionShow){
             case ALL:
-                setNumberAllBooksRequest();
+                numberBooks = database.getNumberAllBooks();
                 break;
             case GENRE:
-                setNumberBooksByGenreIdRequest(genreId);
+                numberBooks = database.getNumberBooksByGenreId(genreId);
                 break;
             case TITLE:
                 break;
@@ -244,219 +131,64 @@ public class BooksController implements Serializable {
         noCurPage = 0;
         fillBooks();
         setNumberBooks();
+        saveImages();
         setNoPages();
     }
     
-    public void setNumberAllBooksRequest()
-    {
-        Connection conn = null;
-        DataSource dataSource = null;
-        Statement statment = null;
-        ResultSet resultSet = null;
-        Integer tempNumberBooks = 0;
-        try{
-            numberBooks = 0;
-            InitialContext initialContext = new InitialContext();
-            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
-            conn = dataSource.getConnection();
-            statment = conn.createStatement();
-            resultSet = statment.executeQuery(
-                    "SELECT COUNT(*) AS number_pages FROM book");
-            
-            resultSet.last();
-            tempNumberBooks = resultSet.getInt("number_pages");
-            
-        } catch (NamingException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            try {
-                if (statment != null){
-                    statment.close();
-                }
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (conn != null){
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public ArrayList<Integer> getNoPages(){
+        if (noPages.isEmpty()){
+            setAttributes();
         }
-        numberBooks = tempNumberBooks;
-    }   
-    private void setNumberBooksByGenreIdRequest(Integer genreId)
-    {
-        Connection conn = null;
-        DataSource dataSource = null;
-        Statement statment = null;
-        ResultSet resultSet = null;
-        Integer tempNumberBooks = 0;
-        try{
-            numberBooks = 0;
-            InitialContext initialContext = new InitialContext();
-            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
-            conn = dataSource.getConnection();
-            statment = conn.createStatement();
-           
-            resultSet = statment.executeQuery(
-                    "SELECT COUNT(*) AS number_pages FROM book " +
-                    "WHERE book.genre_id = " + genreId);
-            
-            resultSet.last();
-            tempNumberBooks = resultSet.getInt("number_pages");
-            
-        } catch (NamingException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            try {
-                if (statment != null){
-                    statment.close();
-                }
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (conn != null){
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        numberBooks = tempNumberBooks;
+        return noPages;
     }
     
-    public void setNoPages(){
+    public void setNoPages(){ 
+        noPages = fillNoPages(numberBooks, numberBooksOnPage);
+    }
+    
+    public ArrayList<Integer> fillNoPages(Integer numberBooks, Integer numberBooksOnPage){
 
-        ArrayList<Integer> tempNoPages = new ArrayList<Integer>();
+        ArrayList<Integer> noPages = new ArrayList<Integer>();
         Integer numberPages = numberBooks / numberBooksOnPage;
         
-        for (Integer noPage = 1; noPage <= numberPages; ++noPage){
-            tempNoPages.add(noPage);
+        for (Integer noPage = 1; noPage <= numberPages + 1; ++noPage){
+            noPages.add(noPage);
         }
-        
-        if (numberBooks < numberBooksOnPage){
-            tempNoPages.add(1);
-        }
-        noPages = tempNoPages;
+       
+        return noPages;
     }
     
-    private void deleteBookByIdRequest(Integer bookId){
-        Connection conn = null;
-        DataSource dataSource = null;
-        Statement statment = null;
-        ResultSet resultSet = null;
-        try{
-            InitialContext initialContext = new InitialContext();
-            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
-            conn = dataSource.getConnection();
-            statment = conn.createStatement();
-            
-            statment.executeUpdate(
-                    "DELETE FROM book " +
-                    "WHERE book.book_id = " + bookId);
-        
-        } catch (NamingException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            try {
-                if (statment != null){
-                    statment.close();
-                }
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (conn != null){
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-   
-    public void deleteBook(){
+    public boolean deleteBook(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         Integer bookId = Integer.valueOf(params.get("book_id"));
-        deleteBookByIdRequest(bookId);
-        setAttributes();
-    }
-    
-    private void updateBookRequest(){
-        Connection conn = null;
-        DataSource dataSource = null;
-        Statement statment = null;
-        ResultSet resultSet = null;
-        ArrayList<Book> tempBooks = new ArrayList<>();
-        try{
-            
-            InitialContext initialContext = new InitialContext();
-            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
-            conn = dataSource.getConnection();
-            statment = conn.createStatement();
-            
-            resultSet = statment.executeQuery(
-                        " SELECT * FROM book, genre" +
-                        " WHERE book.genre_id = genre.genre_id" +
-                        " AND book.genre_id = " + genreId + 
-                        " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
-                             numberBooksOnPage);
-            
-            while (resultSet.next()) {
-                Book book = new Book();
-                Integer id = resultSet.getInt("book_id");
-                book.setId(resultSet.getInt("book_id"));
-                book.setTitle(resultSet.getString("book_title"));
-                book.setDescription(resultSet.getString("book_description"));
-                book.setIsbn(resultSet.getString("book_isbn"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setPublisher(resultSet.getString("publisher"));
-                book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(new ImageIcon(resultSet.getBytes("book_image")).getImage());
-                tempBooks.add(book);
-            }
-            
-        } catch (NamingException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            try {
-                if (statment != null){
-                    statment.close();
-                }
-                if (resultSet != null){
-                    resultSet.close();
-                }
-                if (conn != null){
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (database.deleteBookById(bookId)){
+            setAttributes();
+            return true;
         }
-        books = tempBooks;
+        return false;
     }
     
-    public void updateBook(){
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        Integer bookId = 0;
-        bookId = Integer.valueOf(params.get("book_id"));
-        //ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        //String title = ec.getRequestParameterMap().get("ada" + ":title");
-        int i = 0;   
+    public boolean updateBooks(){
+        setModeDisplay();
+        if (database.updateBooks(books)){
+            setAttributes();
+            return true;
+        }
+        return false;
+    }
+    
+    public void startUpdate(){
+        setModeEdit();
+        booksCopy = books;
+    }
+            
+    public void cancelUpdate(){
+        setModeDisplay();
+        books = booksCopy;
     }
     
     public void setModeDisplay(){
         this.showMode = ShowMode.DISPLAY;
-        setAttributes();
     }
     
     public void setModeEdit(){
@@ -466,4 +198,86 @@ public class BooksController implements Serializable {
     public boolean isModeDisplay(){
         return showMode == ShowMode.DISPLAY;
     }
-}
+    
+    public boolean isModeEdit(){
+        return showMode == ShowMode.EDIT;
+    }
+    
+    public boolean isModeCreate(){
+        return showMode == ShowMode.CREATE;
+    }
+    
+    public void setModeCreate(){
+        showMode = ShowMode.CREATE;
+    }
+    
+    public Book getNewBook(){
+        newBook = new Book();
+        return newBook;
+    }
+  
+    public boolean createBook(){
+        setModeDisplay();
+        if (database.createBook(newBook)){
+            setAttributes();
+            return true;
+        }
+        return true;
+    }
+    
+    public boolean saveImages(){
+        FileOutputStream fos = null;
+        boolean savedImages = true;
+        try {
+            if (!books.isEmpty()){
+                File directory = new File(Paths.get(PATH_TO_FILE).toString());
+                if (!directory.exists()){
+                    directory.mkdirs();
+                }
+                for (Book book : books){
+                    File file = new File(Paths.get(PATH_TO_FILE).toString() + '\\' + book.getImageName());
+                    fos = new FileOutputStream(file);
+                    fos.write(book.getImage());
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
+            savedImages = false;
+        } catch (IOException ex) {
+            Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
+            savedImages = false;
+        }finally{
+            try {
+                if (fos != null){
+                    fos.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return savedImages;
+    }
+    
+    public void setSelectedGenreId(ValueChangeEvent event) {
+        newBook.setGenreId(Integer.parseInt(event.getNewValue().toString()));
+    }
+    
+    public void setSelectedImage() {
+        try {
+            InputStream input = image.getInputStream();
+            //newBook.setImage(image) = IOUtils.toByteArray(is);
+        }
+        catch (IOException e) {
+            // Show faces message?
+        }
+    }
+    
+    public Part getImage(){
+        return this.image;
+    }
+    
+    public void setImage(Part image){
+        this.image = image;
+    }
+    
+}   
