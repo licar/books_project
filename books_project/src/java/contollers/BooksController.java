@@ -264,25 +264,7 @@ public class BooksController implements Serializable {
         newBook.setGenreId(Integer.parseInt(event.getNewValue().toString()));
     }
     
-    public boolean setNewBookImage(FileUploadEvent event) {
-        UploadedFile uploadedImage = event.getFile();
-        InputStream is = null;
-        boolean saved = true;
-        try {
-            //is = selectedImage.getInputStream();
-            newBook.setImage(ByteStreams.toByteArray(is));
-        } catch (IOException ex) {
-            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-            saved = false;
-        }finally{
-            if (is != null){
-                try {
-                    is.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        return saved;
+    public void setNewBookImage(FileUploadEvent event) {
+        newBook.setImage(event.getFile().getContents());    
     }
 }   
