@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
     <h:head>
         <h:outputStylesheet library="css" name="styles.css"/>
@@ -14,7 +15,7 @@
         <ui:composition>            
             <div class="content_books">
                 <ui:insert name = "content_books">
-                    <h:form>
+                    <h:form enctype="multipart/form-data">
                         <h:commandButton immediate="true" value="редактировать" action="#{booksController.startUpdate()}" rendered="#{booksController.isModeDisplay()}"/>
                         <h:commandButton immediate="true" value="добавить" action="#{booksController.setModeCreate()}" rendered="#{booksController.isModeDisplay()}"/>
                         <h:commandButton value="сохранить:" action="#{booksController.updateBooks()}" rendered="#{booksController.isModeEdit()}"/>
@@ -41,7 +42,7 @@
                             <h:column>
                                 <table border="1">
                                     <tr>
-                                        <td><h:outputText value="название:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="название:"/></td>
                                         <td>
                                             <h:inputText id="title" value="#{book.title}" rendered="#{booksController.isModeEdit() and book.isEdit()}">
                                                 <f:validator validatorId="validators.TitleValidator"/>
@@ -52,7 +53,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="год:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="год:"/></td>
                                         <td>
                                             <h:inputText id="year" value="#{book.year}" rendered="#{booksController.isModeEdit()  and book.isEdit()}">
                                                 <f:validator validatorId="validators.YearValidator"/>
@@ -63,7 +64,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="автор:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="автор:"/></td>
                                         <td>
                                             <h:inputText id="author"  value="#{book.author}" rendered="#{booksController.isModeEdit()  and book.isEdit()}">
                                                 <f:validator validatorId="validators.AuthorValidator"/>
@@ -74,7 +75,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="издательство:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="издательство:"/></td>
                                         <td>
                                             <h:inputText id="publisher" value="#{book.publisher}" rendered="#{booksController.isModeEdit()  and book.isEdit()}">
                                                 <f:validator validatorId="validators.PublisherValidator"/>
@@ -86,7 +87,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="исбн:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="исбн:"/></td>
                                         <td>
                                             <h:inputText id="isbn"  value="#{book.isbn}" rendered="#{booksController.isModeEdit() and book.isEdit()}">
                                                 <f:validator validatorId="validators.IsbnValidator"/>
@@ -122,7 +123,7 @@
                             <h:column>
                                 <table border="1">
                                     <tr>
-                                        <td><h:outputText value="название:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="название:"/></td>
                                         <td>
                                             <h:inputText id="title" value="#{book.title}">
                                                 <f:validator validatorId="validators.TitleValidator"/>
@@ -132,15 +133,15 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="жанр:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="жанр:"/></td>
                                         <td>
-                                            <h:selectOneMenu id="genre" value="#{booksController.selectedGenreId}" onchange="submit()" valueChangeListener="#{booksController.setSelectedGenre}">
+                                            <h:selectOneMenu immediate="true" id="genre" onchange="submit()" valueChangeListener="#{booksController.setSelectedGenreId}">
                                                 <f:selectItems value="#{genresController.getGenres()}" var="genre" itemValue="#{genre.id}" itemLabel="#{genre.name}"/>
                                             </h:selectOneMenu>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="год:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="год:"/></td>
                                         <td>
                                             <h:inputText id="year" value="#{book.year}">
                                                 <f:validator validatorId="validators.YearValidator"/>
@@ -150,7 +151,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="автор:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="автор:"/></td>
                                         <td>
                                             <h:inputText id="author"  value="#{book.author}">
                                                 <f:validator validatorId="validators.AuthorValidator"/>
@@ -160,7 +161,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="издательство:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="издательство:"/></td>
                                         <td>
                                             <h:inputText id="publisher" value="#{book.publisher}">
                                                 <f:validator validatorId="validators.PublisherValidator"/>
@@ -171,7 +172,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="исбн:" styleClass="attr_description"/></td>
+                                        <td><h:outputText value="исбн:"/></td>
                                         <td>
                                             <h:inputText id="isbn"  value="#{book.isbn}">
                                                 <f:validator validatorId="validators.IsbnValidator"/>
@@ -182,15 +183,12 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="изображение" styleClass="attr_description"/></td>
                                         <td>
-                                            
+                                            <p:fileUpload fileUploadListener="#{booksController.setNewBookImage}" fileLimit="1" required="true" requiredMessage="неоходимо"/> 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="файл" styleClass="attr_description"/></td>
-                                        
-                                        
+                                        <td><h:outputText value="файл"/></td>
                                     </tr>
                                 </table>
                             </h:column>

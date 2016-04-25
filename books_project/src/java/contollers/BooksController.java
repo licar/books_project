@@ -7,6 +7,7 @@ package contollers;
 
 import beans.Book;
 import beans.Genre;
+import com.google.common.io.ByteStreams;
 import database.MySql;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.logging.Logger;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.Part;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 
 /**
@@ -42,7 +45,6 @@ public class BooksController implements Serializable {
     public final static String PATH_TO_FILE = "/var/webapp/";
     private MySql database = new MySql();
     private Book newBook = new Book();
-    private Part image;
     
     private ArrayList<Book> books = new ArrayList<Book>();
     private ArrayList<Book> booksCopy = new ArrayList<Book>();
@@ -262,22 +264,25 @@ public class BooksController implements Serializable {
         newBook.setGenreId(Integer.parseInt(event.getNewValue().toString()));
     }
     
-    public void setSelectedImage() {
+    public boolean setNewBookImage(FileUploadEvent event) {
+        UploadedFile uploadedImage = event.getFile();
+        InputStream is = null;
+        boolean saved = true;
         try {
-            InputStream input = image.getInputStream();
-            //newBook.setImage(image) = IOUtils.toByteArray(is);
+            //is = selectedImage.getInputStream();
+            newBook.setImage(ByteStreams.toByteArray(is));
+        } catch (IOException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            saved = false;
+        }finally{
+            if (is != null){
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
-        catch (IOException e) {
-            // Show faces message?
-        }
+        return saved;
     }
-    
-    public Part getImage(){
-        return this.image;
-    }
-    
-    public void setImage(Part image){
-        this.image = image;
-    }
-    
 }   

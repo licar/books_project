@@ -5,9 +5,9 @@
         <group>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/index.xhtml</file>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/contollers/BooksController.java</file>
-            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/database/MySql.java</file>
             <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/templates/content.xhtml</file>
-            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/web/WEB-INF/glassfish-web.xml</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/beans/Book.java</file>
+            <file>file:/C:/Users/user/Documents/GitHub/books_project/books_project/src/java/contollers/GenresController.java</file>
         </group>
     </open-files>
 </project-private>
