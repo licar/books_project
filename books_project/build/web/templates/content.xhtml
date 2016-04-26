@@ -15,7 +15,7 @@
         <ui:composition>            
             <div class="content_books">
                 <ui:insert name = "content_books">
-                    <h:form enctype="multipart/form-data">
+                    <h:form>
                         <h:commandButton immediate="true" value="редактировать" action="#{booksController.startUpdate()}" rendered="#{booksController.isModeDisplay()}"/>
                         <h:commandButton immediate="true" value="добавить" action="#{booksController.setModeCreate()}" rendered="#{booksController.isModeDisplay()}"/>
                         <h:commandButton value="сохранить:" action="#{booksController.updateBooks()}" rendered="#{booksController.isModeEdit()}"/>
@@ -46,7 +46,6 @@
                                         <td>
                                             <h:inputText id="title" value="#{book.title}" rendered="#{booksController.isModeEdit() and book.isEdit()}">
                                                 <f:validator validatorId="validators.TitleValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="title"/>
                                             <h:outputText value="#{book.title}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
@@ -57,7 +56,6 @@
                                         <td>
                                             <h:inputText id="year" value="#{book.year}" rendered="#{booksController.isModeEdit()  and book.isEdit()}">
                                                 <f:validator validatorId="validators.YearValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="year"/>
                                             <h:outputText value="#{book.year}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
@@ -68,7 +66,6 @@
                                         <td>
                                             <h:inputText id="author"  value="#{book.author}" rendered="#{booksController.isModeEdit()  and book.isEdit()}">
                                                 <f:validator validatorId="validators.AuthorValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="author"/>
                                             <h:outputText value="#{book.author}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
@@ -79,8 +76,6 @@
                                         <td>
                                             <h:inputText id="publisher" value="#{book.publisher}" rendered="#{booksController.isModeEdit()  and book.isEdit()}">
                                                 <f:validator validatorId="validators.PublisherValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
-
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="publisher"/>
                                             <h:outputText  value="#{book.publisher}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
@@ -91,8 +86,6 @@
                                         <td>
                                             <h:inputText id="isbn"  value="#{book.isbn}" rendered="#{booksController.isModeEdit() and book.isEdit()}">
                                                 <f:validator validatorId="validators.IsbnValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
-
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="isbn"/>
                                             <h:outputText value="#{book.isbn}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}"/>
@@ -106,15 +99,15 @@
                                 <h:outputText value="#{book.description}" rendered="#{booksController.isModeDisplay() or !book.isEdit()}" />
                             </h:column>         
                         </h:dataTable>
-
+                    </h:form>
+                    
+                    <h:form enctype="multipart/form-data" >        
                         <h:dataTable value="#{booksController.getNewBook()}" var="book"  border="1" rendered="#{booksController.isModeCreate()}">
 
                             <h:column>
                                 <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
                                 
-                                <h:commandLink action="#{booksController.createBook()}">
-                                    <h:commandButton value="создать"/>
-                                </h:commandLink>
+                                <h:commandButton value="сохранить:" action="#{booksController.createBook()}" rendered="#{booksController.isModeCreate()}"/>
                                 <h:commandLink immediate="true" action="#{booksController.setModeDisplay()}">
                                     <h:commandButton value="отменить"/>
                                 </h:commandLink>
@@ -127,7 +120,6 @@
                                         <td>
                                             <h:inputText id="title" value="#{book.title}">
                                                 <f:validator validatorId="validators.TitleValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="title"/>
                                         </td>
@@ -135,7 +127,7 @@
                                     <tr>
                                         <td><h:outputText value="жанр:"/></td>
                                         <td>
-                                            <h:selectOneMenu immediate="true" id="genre" onchange="submit()" valueChangeListener="#{booksController.setSelectedGenreId}">
+                                            <h:selectOneMenu immediate="true" id="genre" onchange="submit()" valueChangeListener="#{booksController.setSelectedGenreId}" rendered="true">
                                                 <f:selectItems value="#{genresController.getGenres()}" var="genre" itemValue="#{genre.id}" itemLabel="#{genre.name}"/>
                                             </h:selectOneMenu>
                                         </td>
@@ -145,7 +137,6 @@
                                         <td>
                                             <h:inputText id="year" value="#{book.year}">
                                                 <f:validator validatorId="validators.YearValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="year"/>
                                         </td>
@@ -155,7 +146,6 @@
                                         <td>
                                             <h:inputText id="author"  value="#{book.author}">
                                                 <f:validator validatorId="validators.AuthorValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="author"/>
                                         </td>
@@ -165,8 +155,6 @@
                                         <td>
                                             <h:inputText id="publisher" value="#{book.publisher}">
                                                 <f:validator validatorId="validators.PublisherValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this"/>
-
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="publisher"/>
                                         </td>
@@ -176,8 +164,6 @@
                                         <td>
                                             <h:inputText id="isbn"  value="#{book.isbn}">
                                                 <f:validator validatorId="validators.IsbnValidator"/>
-                                                <f:ajax event="change" execute="@this" render="@this" immediate="true"/>
-
                                             </h:inputText>
                                             <h:message errorStyle="color:red" for="isbn"/>
                                         </td>
@@ -185,11 +171,16 @@
                                     <tr>
                                         <td>
                                             <h:outputText value="изображение"/>
-                                            <p:fileUpload  fileUploadListener="#{booksController.setNewBookImage}" fileLimit="1" required="true" requiredMessage="неоходимо"/> 
+                                            <p:fileUpload id="uploadImage" immediate="true" fileUploadListener="#{booksController.setNewBookImage}" allowTypes="/(\.|\/)(jpeg|jpg|img|png)$/" fileLimit="1"/>
+                                            <h:message errorStyle="color:red" for="uploadImage"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><h:outputText value="файл"/></td>
+                                        <td>
+                                            <h:outputText value="изображение"/>
+                                            <p:fileUpload id="uploadFile" immediate="true" fileUploadListener="#{booksController.setNewBookFile}" allowTypes="/(\.|\/)(fb2)$/" fileLimit="1"/>
+                                            <h:message errorStyle="color:red" for="uploadFile"/>
+                                        </td>
                                     </tr>
                                 </table>
                             </h:column>

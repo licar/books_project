@@ -172,11 +172,11 @@ public class BooksController implements Serializable {
     
     public boolean updateBooks(){
         setModeDisplay();
-        if (database.updateBooks(books)){
-            setAttributes();
-            return true;
+        boolean updated = database.updateBooks(books);
+        if (!updated){
+            books = booksCopy;
         }
-        return false;
+        return updated;
     }
     
     public void startUpdate(){
@@ -213,18 +213,18 @@ public class BooksController implements Serializable {
         showMode = ShowMode.CREATE;
     }
     
-    public Book getNewBook(){
-        newBook = new Book();
+    public Book getNewBook(){        
         return newBook;
     }
   
     public boolean createBook(){
         setModeDisplay();
-        if (database.createBook(newBook)){
-            setAttributes();
-            return true;
+        boolean created = database.createBook(newBook);
+        if (created){
+            books.add(newBook);
         }
-        return true;
+        newBook = new Book();
+        return created;
     }
     
     public boolean saveImages(){
@@ -265,6 +265,26 @@ public class BooksController implements Serializable {
     }
     
     public void setNewBookImage(FileUploadEvent event) {
-        newBook.setImage(event.getFile().getContents());    
+        UploadedFile uploadedFile = event.getFile();
+        InputStream is = null;
+        try {
+            is = uploadedFile.getInputstream();
+            newBook.setImage(ByteStreams.toByteArray(is));
+        } catch (IOException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            if (is != null){
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+            
+    }
+    
+    public void setNewBookFile(FileUploadEvent event) {
+        newBook.setFile(event.getFile().getContents());    
     }
 }   

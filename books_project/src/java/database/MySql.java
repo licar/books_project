@@ -292,8 +292,6 @@ public class MySql{
                     " book_publisher = ?," +
                     " book_year = ?," +
                     " book_isbn = ?" +
-                    " book_image = ?" +
-                    " book_file = ? " +
                     " WHERE book_id = ?"
                 );
             
@@ -307,8 +305,6 @@ public class MySql{
                     preparedStatment.setInt(5, book.getYear());
                     preparedStatment.setString(6, book.getIsbn());
                     preparedStatment.setString(7, book.getId().toString());
-                    preparedStatment.setBytes(8, book.getImage());
-                    preparedStatment.setBytes(9, book.getFile());
                     preparedStatment.executeUpdate();
                 }
             }
@@ -350,25 +346,21 @@ public class MySql{
             dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
             conn = dataSource.getConnection();
             preparedStatment = conn.prepareStatement(
-                    "CREATE book" +
-                    " SET book_title = ?," +
-                    " book_description = ?," +
-                    " book_author = ?," +
-                    " book_publisher = ?," +
-                    " book_year = ?," +
-                    " book_isbn = ?" +
-                    " book_genre_id"
+                    "INSERT INTO book (book_title, book_description, book_year, book_isbn, book_image, book_file, book_author, genre_id, book_publisher)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 );
 
         preparedStatment.setString(1, book.getTitle());
         preparedStatment.setString(2, book.getDescription());
-        preparedStatment.setString(3, book.getAuthor());
-        preparedStatment.setString(4, book.getPublisher());
-        preparedStatment.setInt(5, book.getYear());
-        preparedStatment.setString(6, book.getIsbn());
-        preparedStatment.setString(7, book.getId().toString());
-        //preparedStatment.setString(8, newGenre.getId().toString())
-
+        preparedStatment.setInt(3, book.getYear());
+        preparedStatment.setString(4, book.getIsbn());
+        preparedStatment.setBytes(5, book.getImage());
+        preparedStatment.setBytes(6, book.getFile());
+        preparedStatment.setString(7, book.getAuthor());
+        preparedStatment.setInt(8, book.getGenreId());
+        preparedStatment.setString(9, book.getPublisher());
+        preparedStatment.executeUpdate();
+        
         } catch (NamingException ex) {
             Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
             hadException = true;
