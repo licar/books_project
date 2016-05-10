@@ -16,14 +16,14 @@
             <div class="content_books">
                 <ui:insert name = "content_books">
                     <h:form>
-                        <h:commandButton immediate="true" value="редактировать" action="#{booksController.startUpdate()}" rendered="#{booksController.isModeDisplay()}"/>
+                        <h:commandButton immediate="true" value="редактировать" action="#{booksController.setModeEdit()}" rendered="#{booksController.isModeDisplay()}"/>
                         <h:commandButton immediate="true" value="добавить" action="#{booksController.setModeCreate()}" rendered="#{booksController.isModeDisplay()}"/>
                         <h:commandButton value="сохранить:" action="#{booksController.updateBooks()}" rendered="#{booksController.isModeEdit()}"/>
                         <h:commandButton immediate="true" value="отменить:" action="#{booksController.cancelUpdate()}" rendered="#{booksController.isModeEdit()}"/>
                         
                         <h:dataTable value="#{booksController.getBooks()}" var="book"  border="1" rendered="#{booksController.isModeDisplay() or booksController.isModeEdit()}">
                             <h:column>
-                                <h:graphicImage value="/uploads/#{book.imageName}" styleClass="col_image_big"/>
+                                <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
                                 
                                 <h:commandLink action="#{booksController.deleteBook()}" rendered="#{booksController.isModeDisplay()}"> 
                                     <f:param name="book_id" value="#{book.id}" />
@@ -127,7 +127,7 @@
                                     <tr>
                                         <td><h:outputText value="жанр:"/></td>
                                         <td>
-                                            <h:selectOneMenu immediate="true" id="genre" onchange="submit()" valueChangeListener="#{booksController.setSelectedGenreId}" rendered="true">
+                                            <h:selectOneMenu immediate="true" id="genre" onchange="submit()" valueChangeListener="#{booksController.setSelectedGenreId}">
                                                 <f:selectItems value="#{genresController.getGenres()}" var="genre" itemValue="#{genre.id}" itemLabel="#{genre.name}"/>
                                             </h:selectOneMenu>
                                         </td>
@@ -177,7 +177,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <h:outputText value="изображение"/>
+                                            <h:outputText value="файл"/>
                                             <p:fileUpload id="uploadFile" immediate="true" fileUploadListener="#{booksController.setNewBookFile}" allowTypes="/(\.|\/)(fb2)$/" fileLimit="1"/>
                                             <h:message errorStyle="color:red" for="uploadFile"/>
                                         </td>

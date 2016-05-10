@@ -11,5 +11,5 @@ package enums;
  */
 public class enums {
     public enum ShowMode {DISPLAY, EDIT, CREATE};
-    public enum ConditionsShow { ALL, GENRE, AUTHOR, TITLE, PUBLISHER};
+    public enum ConditionsShow { ALL, GENRE, AUTHOR, TITLE, PUBLISHER, ISBN};
 }

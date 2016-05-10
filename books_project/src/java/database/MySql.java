@@ -50,7 +50,7 @@ public class MySql{
                     numberBooksOnPage);
             
             
-            for(Integer i = 0; resultSet.next(); ++i) {
+            while(resultSet.next()) {
                 Book book = new Book();
                 book.setId(resultSet.getInt("book_id"));
                 book.setTitle(resultSet.getString("book_title"));
@@ -62,7 +62,6 @@ public class MySql{
                 book.setYear(resultSet.getInt("book_year"));
                 book.setFile(resultSet.getBytes("book_file"));
                 book.setImage(resultSet.getBytes("book_image"));
-                book.setImageName(i.toString()  + ".jpg");
                 books.add(book);
             }
             
@@ -110,7 +109,7 @@ public class MySql{
                              numberBooksOnPage);
             
             
-            for(Integer j = 0; resultSet.next(); ++j) {
+            while(resultSet.next()) {
                 Book book = new Book();
                 book.setId(resultSet.getInt("book_id"));
                 book.setTitle(resultSet.getString("book_title"));
@@ -122,7 +121,6 @@ public class MySql{
                 book.setYear(resultSet.getInt("book_year"));
                 book.setFile(resultSet.getBytes("book_file"));
                 book.setImage(resultSet.getBytes("book_image"));
-                book.setImageName(j.toString()  + ".jpg");
                 books.add(book);
             }
         } catch (NamingException ex) {
@@ -205,6 +203,184 @@ public class MySql{
             resultSet = statment.executeQuery(
                     "SELECT COUNT(*) AS number_pages FROM book " +
                     "WHERE book.genre_id = " + genreId);
+            
+            resultSet.last();
+            numberBooks = resultSet.getInt("number_pages");
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return numberBooks;
+    }
+    
+    public Integer getNumberBooksByTitle(String title)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        Integer numberBooks = 0;
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+           
+            resultSet = statment.executeQuery(
+                    "SELECT COUNT(*) AS number_pages FROM book" +
+                    " WHERE book_title LIKE '%" + title + "%'");
+            
+            resultSet.last();
+            numberBooks = resultSet.getInt("number_pages");
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return numberBooks;
+    }
+    
+    public Integer getNumberBooksByAuthor(String author)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        Integer numberBooks = 0;
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+           
+            resultSet = statment.executeQuery(
+                    "SELECT COUNT(*) AS number_pages FROM book" +
+                    " WHERE book_author LIKE '%" + author + "%'");
+            
+            resultSet.last();
+            numberBooks = resultSet.getInt("number_pages");
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return numberBooks;
+    }
+    
+    public Integer getNumberBooksByIsbn(String isbn)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatment = null;
+        Integer numberBooks = 0;
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+           
+            resultSet = statment.executeQuery(
+                    "SELECT COUNT(*) AS number_pages FROM book" +
+                    " WHERE book_isbn = " + isbn);
+            
+            
+            resultSet.last();
+            numberBooks = resultSet.getInt("number_pages");
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+            numberBooks = -1;
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return numberBooks;
+    }
+    
+    public Integer getNumberBooksByPublisher(String publisher)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        Integer numberBooks = 0;
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+           
+            resultSet = statment.executeQuery(
+                    "SELECT COUNT(*) AS number_pages FROM book" +
+                    " WHERE book_publisher LIKE '%" + publisher + "%'");
             
             resultSet.last();
             numberBooks = resultSet.getInt("number_pages");
@@ -383,6 +559,234 @@ public class MySql{
             }
         }
         return !hadException;
+    }
+    
+    public ArrayList<Book> getBooksByTitle(String title, Integer numberBooksOnPage, Integer noCurPage)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        ArrayList<Book> books = new ArrayList<Book>();
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+            
+            resultSet = statment.executeQuery(
+                    "SELECT * FROM book" +
+                    " WHERE book_title LIKE '%" + title + "%'" +
+                    " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
+                    numberBooksOnPage);
+            
+            while(resultSet.next()) {
+                Book book = new Book();
+                book.setId(resultSet.getInt("book_id"));
+                book.setTitle(resultSet.getString("book_title"));
+                book.setGenreId(resultSet.getInt("genre_id"));
+                book.setDescription(resultSet.getString("book_description"));
+                book.setIsbn(resultSet.getString("book_isbn"));
+                book.setAuthor(resultSet.getString("book_author"));
+                book.setPublisher(resultSet.getString("book_publisher"));
+                book.setYear(resultSet.getInt("book_year"));
+                book.setFile(resultSet.getBytes("book_file"));
+                book.setImage(resultSet.getBytes("book_image"));
+                books.add(book);
+            }
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return books;
+    }
+    
+    public ArrayList<Book> getBooksByIsbn(String isbn, Integer numberBooksOnPage, Integer noCurPage)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        ArrayList<Book> books = new ArrayList<Book>();
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+            
+            resultSet = statment.executeQuery(
+                    "SELECT * FROM book" +
+                    " WHERE book_isbn = " + isbn + 
+                    " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
+                    numberBooksOnPage);
+            
+            while(resultSet.next()) {
+                Book book = new Book();
+                book.setId(resultSet.getInt("book_id"));
+                book.setTitle(resultSet.getString("book_title"));
+                book.setGenreId(resultSet.getInt("genre_id"));
+                book.setDescription(resultSet.getString("book_description"));
+                book.setIsbn(resultSet.getString("book_isbn"));
+                book.setAuthor(resultSet.getString("book_author"));
+                book.setPublisher(resultSet.getString("book_publisher"));
+                book.setYear(resultSet.getInt("book_year"));
+                book.setFile(resultSet.getBytes("book_file"));
+                book.setImage(resultSet.getBytes("book_image"));
+                books.add(book);
+            }
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return books;
+    }
+    
+    public ArrayList<Book> getBooksByAuthor(String author, Integer numberBooksOnPage, Integer noCurPage)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        ArrayList<Book> books = new ArrayList<Book>();
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+            
+            resultSet = statment.executeQuery(
+                    "SELECT * FROM book" +
+                    " WHERE book_author LIKE '%" + author + "%'" +
+                    " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
+                    numberBooksOnPage);
+            
+            while(resultSet.next()) {
+                Book book = new Book();
+                book.setId(resultSet.getInt("book_id"));
+                book.setTitle(resultSet.getString("book_title"));
+                book.setGenreId(resultSet.getInt("genre_id"));
+                book.setDescription(resultSet.getString("book_description"));
+                book.setIsbn(resultSet.getString("book_isbn"));
+                book.setAuthor(resultSet.getString("book_author"));
+                book.setPublisher(resultSet.getString("book_publisher"));
+                book.setYear(resultSet.getInt("book_year"));
+                book.setFile(resultSet.getBytes("book_file"));
+                book.setImage(resultSet.getBytes("book_image"));
+                books.add(book);
+            }
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return books;
+    }
+    
+    public ArrayList<Book> getBooksByPublisher(String publisher, Integer numberBooksOnPage, Integer noCurPage)
+    {
+        Connection conn = null;
+        DataSource dataSource = null;
+        Statement statment = null;
+        ResultSet resultSet = null;
+        ArrayList<Book> books = new ArrayList<Book>();
+        try{
+            InitialContext initialContext = new InitialContext();
+            dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+            
+            conn = dataSource.getConnection();
+            statment = conn.createStatement();
+            
+            resultSet = statment.executeQuery(
+                    "SELECT * FROM book" +
+                    " WHERE book_publisher LIKE '%" + publisher + "%'" +
+                    " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
+                    numberBooksOnPage);
+            
+            while(resultSet.next()) {
+                Book book = new Book();
+                book.setId(resultSet.getInt("book_id"));
+                book.setTitle(resultSet.getString("book_title"));
+                book.setGenreId(resultSet.getInt("genre_id"));
+                book.setDescription(resultSet.getString("book_description"));
+                book.setIsbn(resultSet.getString("book_isbn"));
+                book.setAuthor(resultSet.getString("book_author"));
+                book.setPublisher(resultSet.getString("book_publisher"));
+                book.setYear(resultSet.getInt("book_year"));
+                book.setFile(resultSet.getBytes("book_file"));
+                book.setImage(resultSet.getBytes("book_image"));
+                books.add(book);
+            }
+            
+        } catch (NamingException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(BooksController.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                if (statment != null){
+                    statment.close();
+                }
+                if (resultSet != null){
+                    resultSet.close();
+                }
+                if (conn != null){
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return books;
     }
 }
     

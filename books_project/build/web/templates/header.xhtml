@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <h:head>
         <h:outputStylesheet library="css" name="styles.css"/>
@@ -11,28 +12,30 @@
 
     <h:body>
         <ui:composition>
-            <div class="top"> 
-                <h:form>
+            <h:form>
+                <div class="top"> 
                     <h:commandButton image="/resources/images/logo.png" styleClass="img_logo"  action="#{booksController.showAllBooks()}" rendered="#{booksController.isModeDisplay()}"/>
                     <h:graphicImage library="images"  name="logo.png" styleClass="img_logo" rendered="#{!booksController.isModeDisplay()}" />
-                </h:form>
-                <div class="txt_title">
-                    Welcome
+                    <div class="txt_title">
+                        Welcome
+                    </div>
+                    <h:commandButton value="logout"  styleClass="logout"/>
                 </div>
-                <h:commandButton value="logout"  styleClass="logout"/>
-            </div>
-            
-            <div class="search">
-                <h:selectOneMenu styleClass="find_criteria">
-                    <f:selectItem itemValue="1" itemLabel="book" />
-                    <f:selectItem itemValue="2" itemLabel="author" />	
-                </h:selectOneMenu>
-                <h:inputText styleClass="fld_search"/>
-                <h:commandButton value="search" styleClass="btn_search"/>            
-            </div>
-            
-        </ui:composition>
 
+                <div class="search">
+                    <h:selectOneMenu onchange="submit()" valueChangeListener="#{booksController.setSearchCriteria}" styleClass="find_criteria">
+                        <f:selectItem itemValue="title" itemLabel="title" />
+                        <f:selectItem itemValue="author" itemLabel="author" />
+                        <f:selectItem itemValue="publisher" itemLabel="publisher" />
+                        <f:selectItem itemValue="isbn" itemLabel="isbn" />
+                    </h:selectOneMenu>
+                    <h:inputText immediate="true" value="#{booksController.searchLineValue}" styleClass="fld_search">
+                        <f:ajax immediate="true" event="change" execute="@this" render="@this"/> 
+                    </h:inputText>
+                    <h:commandButton value="search" immediate="true" action="#{booksController.setAttributes()}" styleClass="btn_search"/>      
+                </div>
+            </h:form>
+        </ui:composition>
    </h:body>
 
 </html>

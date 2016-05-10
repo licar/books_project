@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.Part;
@@ -38,16 +39,14 @@ import org.primefaces.model.UploadedFile;
  *
  * @author user
  */
-@SessionScoped 
 @ManagedBean
+@SessionScoped 
 public class BooksController implements Serializable {
     
-    public final static String PATH_TO_FILE = "/var/webapp/";
     private MySql database = new MySql();
     private Book newBook = new Book();
     
     private ArrayList<Book> books = new ArrayList<Book>();
-    private ArrayList<Book> booksCopy = new ArrayList<Book>();
     private ArrayList<Integer> noPages = new ArrayList<Integer>();
     
     private ConditionsShow conditionShow = ConditionsShow.ALL;
@@ -56,7 +55,9 @@ public class BooksController implements Serializable {
     private Integer curGenreId = 0;
     private Integer numberBooks = 0;
     private Integer genreId = 0;
+    private String searchLineValue = new String();
     private ShowMode showMode = ShowMode.DISPLAY;
+    
     
     public void openPageNo(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -64,7 +65,7 @@ public class BooksController implements Serializable {
         fillBooks();
     }
   
-    private void fillBooks(){
+    public void fillBooks(){
         switch (conditionShow){
             case ALL:
                 books = database.getAllBooks(numberBooksOnPage, noCurPage);
@@ -73,11 +74,17 @@ public class BooksController implements Serializable {
                 books = database.getBooksByGenreId(genreId, numberBooksOnPage, noCurPage);
                 break;
             case TITLE:
+                books = database.getBooksByTitle(searchLineValue, numberBooksOnPage, noCurPage);
                 break;
             case AUTHOR:
+                books = database.getBooksByAuthor(searchLineValue, numberBooksOnPage, noCurPage);
                 break;
             case PUBLISHER:
+                books = database.getBooksByPublisher(searchLineValue, numberBooksOnPage, noCurPage);
                 break;
+            case ISBN:
+                books = database.getBooksByIsbn(searchLineValue, numberBooksOnPage, noCurPage);
+                break;    
         }
     }
     
@@ -121,19 +128,24 @@ public class BooksController implements Serializable {
                 numberBooks = database.getNumberBooksByGenreId(genreId);
                 break;
             case TITLE:
+                numberBooks = database.getNumberBooksByTitle(searchLineValue);
                 break;
             case AUTHOR:
+                numberBooks = database.getNumberBooksByAuthor(searchLineValue);
                 break;
             case PUBLISHER:
+                numberBooks = database.getNumberBooksByPublisher(searchLineValue);
+                break;
+            case ISBN:
+                numberBooks = database.getNumberBooksByIsbn(searchLineValue);
                 break;
         }
     }
     
-    private void setAttributes(){
+    public void setAttributes(){
         noCurPage = 0;
         fillBooks();
         setNumberBooks();
-        saveImages();
         setNoPages();
     }
     
@@ -173,20 +185,13 @@ public class BooksController implements Serializable {
     public boolean updateBooks(){
         setModeDisplay();
         boolean updated = database.updateBooks(books);
-        if (!updated){
-            books = booksCopy;
-        }
         return updated;
     }
     
-    public void startUpdate(){
-        setModeEdit();
-        booksCopy = books;
-    }
             
     public void cancelUpdate(){
         setModeDisplay();
-        books = booksCopy;
+        fillBooks();
     }
     
     public void setModeDisplay(){
@@ -228,36 +233,7 @@ public class BooksController implements Serializable {
     }
     
     public boolean saveImages(){
-        FileOutputStream fos = null;
-        boolean savedImages = true;
-        try {
-            if (!books.isEmpty()){
-                File directory = new File(Paths.get(PATH_TO_FILE).toString());
-                if (!directory.exists()){
-                    directory.mkdirs();
-                }
-                for (Book book : books){
-                    File file = new File(Paths.get(PATH_TO_FILE).toString() + '\\' + book.getImageName());
-                    fos = new FileOutputStream(file);
-                    fos.write(book.getImage());
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
-            savedImages = false;
-        } catch (IOException ex) {
-            Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
-            savedImages = false;
-        }finally{
-            try {
-                if (fos != null){
-                    fos.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(Book.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return savedImages;
+        return false;
     }
     
     public void setSelectedGenreId(ValueChangeEvent event) {
@@ -281,10 +257,35 @@ public class BooksController implements Serializable {
                 }
             }
         }
-            
     }
     
     public void setNewBookFile(FileUploadEvent event) {
         newBook.setFile(event.getFile().getContents());    
+    }
+    
+    public void setSearchCriteria(ValueChangeEvent event) {
+        String searchCriteria = event.getNewValue().toString();
+        switch (searchCriteria){
+            case "title":
+                conditionShow = ConditionsShow.TITLE;
+                break;
+            case "publisher":
+                conditionShow = ConditionsShow.PUBLISHER;
+                break;
+            case "author":
+                conditionShow = ConditionsShow.AUTHOR;
+                break;
+            case "isbn":
+                conditionShow = ConditionsShow.ISBN;
+                break;
+        }
+    }
+    
+    public void setSearchLineValue(String searchLineValue){
+        this.searchLineValue = searchLineValue;
+    }
+    
+    public String getSearchLineValue(){
+        return this.searchLineValue;
     }
 }   
