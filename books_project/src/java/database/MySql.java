@@ -6,6 +6,7 @@
 package database;
  
 import beans.Book;
+import beans.Genre;
 import contollers.BooksController;
 import contollers.GenresController;
 import java.sql.Connection;
@@ -19,15 +20,26 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import javax.swing.ImageIcon;
 
 
 /**
  *
  * @author user
  */
-public class MySql{   
+public class MySql{  
     public static String DATA_SOURCE = "jdbc/library";   
+    
+    private static MySql instance = null; 
+    
+    private MySql(){
+    }
+    
+    public static MySql GetInstance(){
+        if (instance == null){
+            instance = new MySql();
+        }
+        return instance;
+    }
     
     public ArrayList<Book> getAllBooks(Integer numberBooksOnPage, Integer noCurPage)
     {
@@ -44,8 +56,8 @@ public class MySql{
             statment = conn.createStatement();
             
             resultSet = statment.executeQuery(
-                    "SELECT * FROM book, genre" +
-                    " WHERE book.genre_id = genre.genre_id" +
+                    "SELECT book_id, book_title, genre_id, book_description, book_isbn, book_author, book_publisher, book_year" +
+                    " FROM book" +
                     " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
                     numberBooksOnPage);
             
@@ -60,8 +72,6 @@ public class MySql{
                 book.setAuthor(resultSet.getString("book_author"));
                 book.setPublisher(resultSet.getString("book_publisher"));
                 book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(resultSet.getBytes("book_image"));
                 books.add(book);
             }
             
@@ -102,9 +112,9 @@ public class MySql{
             statment = conn.createStatement();
             
             resultSet = statment.executeQuery(
-                        " SELECT * FROM book, genre" +
-                        " WHERE book.genre_id = genre.genre_id" +
-                        " AND book.genre_id = " + genreId + 
+                        "SELECT book_id, book_title, genre_id, book_description, book_isbn, book_author, book_publisher, book_year" +
+                        " FROM book" + 
+                        " WHERE genre_id = " + genreId +
                         " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
                              numberBooksOnPage);
             
@@ -119,8 +129,6 @@ public class MySql{
                 book.setAuthor(resultSet.getString("book_author"));
                 book.setPublisher(resultSet.getString("book_publisher"));
                 book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(resultSet.getBytes("book_image"));
                 books.add(book);
             }
         } catch (NamingException ex) {
@@ -633,7 +641,8 @@ public class MySql{
             statment = conn.createStatement();
             
             resultSet = statment.executeQuery(
-                    "SELECT * FROM book" +
+                    "SELECT book_id, book_title, genre_id, book_description, book_isbn, book_author, book_publisher, book_year" +
+                    " FROM book" +
                     " WHERE book_isbn = " + isbn + 
                     " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
                     numberBooksOnPage);
@@ -648,8 +657,6 @@ public class MySql{
                 book.setAuthor(resultSet.getString("book_author"));
                 book.setPublisher(resultSet.getString("book_publisher"));
                 book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(resultSet.getBytes("book_image"));
                 books.add(book);
             }
             
@@ -690,7 +697,8 @@ public class MySql{
             statment = conn.createStatement();
             
             resultSet = statment.executeQuery(
-                    "SELECT * FROM book" +
+                    "SELECT book_id, book_title, genre_id, book_description, book_isbn, book_author, book_publisher, book_year" +
+                    " FROM book" +
                     " WHERE book_author LIKE '%" + author + "%'" +
                     " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
                     numberBooksOnPage);
@@ -705,8 +713,6 @@ public class MySql{
                 book.setAuthor(resultSet.getString("book_author"));
                 book.setPublisher(resultSet.getString("book_publisher"));
                 book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(resultSet.getBytes("book_image"));
                 books.add(book);
             }
             
@@ -747,7 +753,8 @@ public class MySql{
             statment = conn.createStatement();
             
             resultSet = statment.executeQuery(
-                    "SELECT * FROM book" +
+                    "SELECT book_id, book_title, genre_id, book_description, book_isbn, book_author, book_publisher, book_year" +
+                    " FROM book" +
                     " WHERE book_publisher LIKE '%" + publisher + "%'" +
                     " LIMIT " + (numberBooksOnPage * noCurPage) + "," +
                     numberBooksOnPage);
@@ -762,8 +769,6 @@ public class MySql{
                 book.setAuthor(resultSet.getString("book_author"));
                 book.setPublisher(resultSet.getString("book_publisher"));
                 book.setYear(resultSet.getInt("book_year"));
-                book.setFile(resultSet.getBytes("book_file"));
-                book.setImage(resultSet.getBytes("book_image"));
                 books.add(book);
             }
             
@@ -788,6 +793,89 @@ public class MySql{
         }
         return books;
     }
+    
+    public ArrayList<Genre> getAllGenres(){
+       Connection conn = null;
+       DataSource dataSource = null;
+       Statement statment = null;
+       ResultSet resultSet = null;
+       ArrayList<Genre> genres = new ArrayList();
+       try{
+           InitialContext initialContext = new InitialContext();
+           dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+           conn = dataSource.getConnection();
+           statment = conn.createStatement();
+           resultSet = statment.executeQuery("SELECT * FROM genre");
+
+           while (resultSet.next()) {
+               Genre genre = new Genre();
+               genre.setId(resultSet.getInt("genre_id"));
+               genre.setName(resultSet.getString("genre_name"));
+               genres.add(genre);
+           }
+
+       } catch (NamingException ex) {
+           Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (SQLException ex) {
+           Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+       }finally{
+           try {
+               if (statment != null){
+                   statment.close();
+               }
+               if (resultSet != null){
+                   resultSet.close();
+               }
+               if (conn != null){
+                   conn.close();
+               }
+           } catch (SQLException ex) {
+               Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       }
+       return genres;
+    }
+    
+    public byte[] getImage(Integer id){
+       Connection conn = null;
+       DataSource dataSource = null;
+       Statement statment = null;
+       ResultSet resultSet = null;
+       byte[] image = null;
+       ArrayList<Genre> genres = new ArrayList();
+       try{
+           InitialContext initialContext = new InitialContext();
+           dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+           conn = dataSource.getConnection();
+           statment = conn.createStatement();
+           resultSet = statment.executeQuery(
+                   "SELECT book_image FROM book" +
+                   " WHERE book_id = " + id);
+           while(resultSet.next()) {
+                image = resultSet.getBytes("book_image");
+            }
+
+       } catch (NamingException ex) {
+           Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (SQLException ex) {
+           Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+       }finally{
+           try {
+               if (statment != null){
+                   statment.close();
+               }
+               if (resultSet != null){
+                   resultSet.close();
+               }
+               if (conn != null){
+                   conn.close();
+               }
+           } catch (SQLException ex) {
+               Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       }
+       return image;
+    }    
 }
     
     

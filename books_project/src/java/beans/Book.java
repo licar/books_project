@@ -6,11 +6,14 @@
 package beans;
 
 import java.awt.Image;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -27,15 +30,12 @@ public class Book {
     private String isbn;
     private byte[] image;
     private byte[] file; 
-    private String imageName;
     private boolean edit = false;
-    private String pathToImage;
     private Integer genreId;
-    
     public Book() {
     }
     
-    public Book(Integer id, String title, String description, String author, String publisher, Integer year, String isbn, byte[] image, byte[] file) {
+    public Book(Integer id, String title, String description, String author, String publisher, Integer year, String isbn) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -43,8 +43,6 @@ public class Book {
         this.publisher = publisher;
         this.year = year;
         this.isbn = isbn;
-        this.image = image;
-        this.file = file;
     }
     
     public Integer getGenreId(){
@@ -62,17 +60,9 @@ public class Book {
     public String getDescription() {
         return description;
     }
-
-    public byte[] getFile() {
-        return file;
-    }
-
+    
     public Integer getId() {
         return id;
-    }
-
-    public byte[] getImage() {
-        return image;
     }
 
     public String getIsbn() {
@@ -139,19 +129,12 @@ public class Book {
         return edit == true;
     }
     
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public byte[] getImage(){
+        return this.image;
     }
     
-    public String getImageName(){
-        return this.imageName;
+    public byte[] getFile(){
+        return this.file;
     }
-    
-    public String getPathToImage(){
-        return pathToImage;
-    }
-    
-    public void setPathToImage(String pathToImage){
-        this.pathToImage = pathToImage;
-    }
+        
 }

@@ -6,7 +6,6 @@
 package contollers;
 
 import beans.Book;
-import beans.Genre;
 import com.google.common.io.ByteStreams;
 import database.MySql;
 import java.io.Serializable;
@@ -17,20 +16,11 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import enums.enums.ConditionsShow;
 import enums.enums.ShowMode;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.servlet.http.Part;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -39,11 +29,11 @@ import org.primefaces.model.UploadedFile;
  *
  * @author user
  */
-@ManagedBean
-@SessionScoped 
+@ManagedBean(name = "booksController", eager = true)
+@SessionScoped
 public class BooksController implements Serializable {
     
-    private MySql database = new MySql();
+    private MySql database = MySql.GetInstance();
     private Book newBook = new Book();
     
     private ArrayList<Book> books = new ArrayList<Book>();
@@ -62,10 +52,12 @@ public class BooksController implements Serializable {
     public void openPageNo(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         noCurPage = Integer.valueOf(params.get("no_page")) - 1;
+        
         fillBooks();
     }
   
     public void fillBooks(){
+        books = null;
         switch (conditionShow){
             case ALL:
                 books = database.getAllBooks(numberBooksOnPage, noCurPage);
@@ -120,6 +112,7 @@ public class BooksController implements Serializable {
     }
     
     private void setNumberBooks(){
+        numberBooks = 0;
         switch (conditionShow){
             case ALL:
                 numberBooks = database.getNumberAllBooks();
@@ -164,8 +157,10 @@ public class BooksController implements Serializable {
 
         ArrayList<Integer> noPages = new ArrayList<Integer>();
         Integer numberPages = numberBooks / numberBooksOnPage;
+        Integer balance = numberBooks % numberBooksOnPage;
         
-        for (Integer noPage = 1; noPage <= numberPages + 1; ++noPage){
+        numberPages = (balance == 0) ? numberPages : (numberPages + 1); 
+        for (Integer noPage = 1; noPage <= numberPages ; ++noPage){
             noPages.add(noPage);
         }
        
@@ -229,11 +224,8 @@ public class BooksController implements Serializable {
             books.add(newBook);
         }
         newBook = new Book();
+        setAttributes();
         return created;
-    }
-    
-    public boolean saveImages(){
-        return false;
     }
     
     public void setSelectedGenreId(ValueChangeEvent event) {
@@ -288,4 +280,14 @@ public class BooksController implements Serializable {
     public String getSearchLineValue(){
         return this.searchLineValue;
     }
+    
+    public void setNumberBooks(FileUploadEvent event) {
+        newBook.setFile(event.getFile().getContents());    
+    }
+    
+    public byte[] getImage(Integer id){
+        byte [] image = database.getImage(id);
+        return image;
+    }
+    
 }   

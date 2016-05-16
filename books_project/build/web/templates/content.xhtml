@@ -23,7 +23,8 @@
                         
                         <h:dataTable value="#{booksController.getBooks()}" var="book"  border="1" rendered="#{booksController.isModeDisplay() or booksController.isModeEdit()}">
                             <h:column>
-                                <h:graphicImage library="images" name="logo.png" styleClass="col_image_big"/>
+                            
+                                <h:graphicImage value="/ShowImage?id=#{book.id}" styleClass="col_image_big"/>
                                 
                                 <h:commandLink action="#{booksController.deleteBook()}" rendered="#{booksController.isModeDisplay()}"> 
                                     <f:param name="book_id" value="#{book.id}" />
@@ -34,9 +35,9 @@
                                         <h:commandButton value="редактировать"/>
                                     </h:commandLink>
                                 </h:panelGroup>                            
-                                <h:panelGroup rendered="#{booksController.isModeDisplay()}">
-                                    <h:commandButton immediate="true" image="/resources/images/download.png" styleClass="col_image"/>
-                                </h:panelGroup>
+                                <p:commandButton image="/resources/images/download.png" rendered="#{booksController.isModeDisplay()}" styleClass="col_image">
+                                    <p:fileDownload  value="#{book.downloadFile}" />
+                                </p:commandButton>
                             </h:column>
 
                             <h:column>
