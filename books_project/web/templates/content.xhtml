@@ -35,9 +35,9 @@
                                         <h:commandButton value="редактировать"/>
                                     </h:commandLink>
                                 </h:panelGroup>                            
-                                <p:commandButton image="/resources/images/download.png" rendered="#{booksController.isModeDisplay()}" styleClass="col_image">
-                                    <p:fileDownload  value="#{book.downloadFile}" />
-                                </p:commandButton>
+                                <h:outputLink value="#{request.contextPath}/UploadFile?id=#{book.id}">
+                                    <h:graphicImage value="/resources/images/download.png" rendered="#{booksController.isModeDisplay()}" styleClass="col_image"/>
+                                </h:outputLink>
                             </h:column>
 
                             <h:column>
@@ -179,7 +179,7 @@
                                     <tr>
                                         <td>
                                             <h:outputText value="файл"/>
-                                            <p:fileUpload id="uploadFile" immediate="true" fileUploadListener="#{booksController.setNewBookFile}" allowTypes="/(\.|\/)(fb2)$/" fileLimit="1"/>
+                                            <p:fileUpload id="uploadFile" immediate="true" fileUploadListener="#{booksController.setNewBookFile}" allowTypes="/(\.|\/)(pdf)$/" fileLimit="1"/>
                                             <h:message errorStyle="color:red" for="uploadFile"/>
                                         </td>
                                     </tr>
@@ -196,9 +196,9 @@
             <div class="no_pages">
                 <ui:insert name = "no_pages">
                     <h:form rendered="#{booksController.isModeDisplay()}">
-                        <ui:repeat value="#{booksController.getNoPages()}" var="noPage">
-                            <h:commandLink  value="#{noPage}" action="#{booksController.openPageNo()}">
-                                <f:param name="no_page" value="#{noPage}"/>
+                        <ui:repeat value="#{booksController.getPageNumbers()}" var="pageNumber">
+                            <h:commandLink  value="#{pageNumber}" action="#{booksController.openPage()}">
+                                <f:param name="no_page" value="#{pageNumber}"/>
                             </h:commandLink>
                         </ui:repeat>
                     </h:form>

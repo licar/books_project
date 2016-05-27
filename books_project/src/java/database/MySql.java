@@ -875,6 +875,47 @@ public class MySql{
            }
        }
        return image;
+    }
+
+    public byte[] getFile(Integer id){
+       Connection conn = null;
+       DataSource dataSource = null;
+       Statement statment = null;
+       ResultSet resultSet = null;
+       byte[] image = null;
+       ArrayList<Genre> genres = new ArrayList();
+       try{
+           InitialContext initialContext = new InitialContext();
+           dataSource = (DataSource) initialContext.lookup(DATA_SOURCE);
+           conn = dataSource.getConnection();
+           statment = conn.createStatement();
+           resultSet = statment.executeQuery(
+                   "SELECT book_file FROM book" +
+                   " WHERE book_id = " + id);
+           while(resultSet.next()) {
+                image = resultSet.getBytes("book_file");
+            }
+
+       } catch (NamingException ex) {
+           Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (SQLException ex) {
+           Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+       }finally{
+           try {
+               if (statment != null){
+                   statment.close();
+               }
+               if (resultSet != null){
+                   resultSet.close();
+               }
+               if (conn != null){
+                   conn.close();
+               }
+           } catch (SQLException ex) {
+               Logger.getLogger(GenresController.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       }
+       return image;
     }    
 }
     

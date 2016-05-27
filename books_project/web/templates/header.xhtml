@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="search">
-                    <h:selectOneMenu onchange="submit()" valueChangeListener="#{booksController.setSearchCriteria}" styleClass="find_criteria">
+                    <h:selectOneMenu onchange="submit()" value="title" valueChangeListener="#{booksController.setSearchCriteria}" styleClass="find_criteria">
                         <f:selectItem itemValue="title" itemLabel="title" />
                         <f:selectItem itemValue="author" itemLabel="author" />
                         <f:selectItem itemValue="publisher" itemLabel="publisher" />

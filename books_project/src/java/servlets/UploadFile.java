@@ -13,18 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import contollers.BooksController;
 
-@WebServlet(name = "UploadFile",
-urlPatterns = {"/UploadFile"})
+@WebServlet(name = "UploadFile", urlPatterns = {"/UploadFile"})
 public class UploadFile extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("image/jpeg");
+        response.setContentType("application/pdf");
         OutputStream out = response.getOutputStream();
         try {
             Integer id = Integer.valueOf(request.getParameter("id"));
             BooksController booksController = (BooksController)request.getSession(false).getAttribute("booksController");
             byte[] image = booksController.getImage(id);
-            response.setContentLength(image.length);
+            response.setHeader("Content-Disposition", "attachment;filename=file.pdf");
             out.write(image);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -37,22 +37,21 @@ public class BooksController implements Serializable {
     private Book newBook = new Book();
     
     private ArrayList<Book> books = new ArrayList<Book>();
-    private ArrayList<Integer> noPages = new ArrayList<Integer>();
+    private ArrayList<Integer> pageNumbers = new ArrayList<Integer>();
     
     private ConditionsShow conditionShow = ConditionsShow.ALL;
-    private Integer numberBooksOnPage = 3;
-    private Integer noCurPage = 0;
-    private Integer curGenreId = 0;
+    private Integer numberBooksPerPage = 3;
+    private Integer currentPageNumber = 0;
+    private Integer currentGenreId = 0;
     private Integer numberBooks = 0;
     private Integer genreId = 0;
     private String searchLineValue = new String();
     private ShowMode showMode = ShowMode.DISPLAY;
     
     
-    public void openPageNo(){
+    public void openPage(){
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        noCurPage = Integer.valueOf(params.get("no_page")) - 1;
-        
+        currentPageNumber = Integer.valueOf(params.get("no_page")) - 1;
         fillBooks();
     }
   
@@ -60,22 +59,22 @@ public class BooksController implements Serializable {
         books = null;
         switch (conditionShow){
             case ALL:
-                books = database.getAllBooks(numberBooksOnPage, noCurPage);
+                books = database.getAllBooks(numberBooksPerPage, currentPageNumber);
                 break;
             case GENRE:
-                books = database.getBooksByGenreId(genreId, numberBooksOnPage, noCurPage);
+                books = database.getBooksByGenreId(genreId, numberBooksPerPage, currentPageNumber);
                 break;
             case TITLE:
-                books = database.getBooksByTitle(searchLineValue, numberBooksOnPage, noCurPage);
+                books = database.getBooksByTitle(searchLineValue, numberBooksPerPage, currentPageNumber);
                 break;
             case AUTHOR:
-                books = database.getBooksByAuthor(searchLineValue, numberBooksOnPage, noCurPage);
+                books = database.getBooksByAuthor(searchLineValue, numberBooksPerPage, currentPageNumber);
                 break;
             case PUBLISHER:
-                books = database.getBooksByPublisher(searchLineValue, numberBooksOnPage, noCurPage);
+                books = database.getBooksByPublisher(searchLineValue, numberBooksPerPage, currentPageNumber);
                 break;
             case ISBN:
-                books = database.getBooksByIsbn(searchLineValue, numberBooksOnPage, noCurPage);
+                books = database.getBooksByIsbn(searchLineValue, numberBooksPerPage, currentPageNumber);
                 break;    
         }
     }
@@ -107,8 +106,8 @@ public class BooksController implements Serializable {
         return numberBooks;
     }
     
-    public Integer getNoCurPage(){
-        return this.noCurPage;
+    public Integer getCurrentPageNumber(){
+        return this.currentPageNumber;
     }
     
     private void setNumberBooks(){
@@ -136,35 +135,36 @@ public class BooksController implements Serializable {
     }
     
     public void setAttributes(){
-        noCurPage = 0;
+        currentPageNumber = 0;
         fillBooks();
         setNumberBooks();
-        setNoPages();
+        setPageNumbers();
     }
     
-    public ArrayList<Integer> getNoPages(){
-        if (noPages.isEmpty()){
+    public ArrayList<Integer> getPageNumbers(){
+        if (pageNumbers.isEmpty()){
             setAttributes();
         }
-        return noPages;
+        return pageNumbers;
     }
     
-    public void setNoPages(){ 
-        noPages = fillNoPages(numberBooks, numberBooksOnPage);
+    public void setPageNumbers(){ 
+        pageNumbers = fillPageNumbers(numberBooks, numberBooksPerPage);
     }
     
-    public ArrayList<Integer> fillNoPages(Integer numberBooks, Integer numberBooksOnPage){
+    public ArrayList<Integer> fillPageNumbers(Integer numberBooks, Integer numberBooksOnPage){
 
-        ArrayList<Integer> noPages = new ArrayList<Integer>();
+        ArrayList<Integer> pageNumbers = new ArrayList<Integer>();
         Integer numberPages = numberBooks / numberBooksOnPage;
         Integer balance = numberBooks % numberBooksOnPage;
         
         numberPages = (balance == 0) ? numberPages : (numberPages + 1); 
-        for (Integer noPage = 1; noPage <= numberPages ; ++noPage){
-            noPages.add(noPage);
+        
+        for (Integer pageNumber = 1; pageNumber <= numberPages ; ++pageNumber){
+            pageNumbers.add(pageNumber);
         }
        
-        return noPages;
+        return pageNumbers;
     }
     
     public boolean deleteBook(){
@@ -286,8 +286,10 @@ public class BooksController implements Serializable {
     }
     
     public byte[] getImage(Integer id){
-        byte [] image = database.getImage(id);
-        return image;
+        return database.getImage(id);
     }
     
+    public byte[] getFile(Integer id){
+        return database.getFile(id);
+    }
 }   

@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import contollers.BooksController;
 
-@WebServlet(name = "ShowImage",
-urlPatterns = {"/ShowImage"})
+@WebServlet(name = "ShowImage", urlPatterns = {"/ShowImage"})
 public class ShowImage extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
